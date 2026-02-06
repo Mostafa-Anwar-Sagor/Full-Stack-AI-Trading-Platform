@@ -1,4 +1,4 @@
-# 📈 AI-Powered Algorithmic Trading Platform
+# 📈 AI-Powered Full-Stack Algorithmic Trading Platform
 
 ![Python](https://img.shields.io/badge/Python-3.12+-blue.svg)
 ![Django](https://img.shields.io/badge/Django-5.0+-green.svg)
