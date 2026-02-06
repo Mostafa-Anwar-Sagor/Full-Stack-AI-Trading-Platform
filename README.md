@@ -1,4 +1,4 @@
-# 📈 AI-Powered Full-Stack Algorithmic Trading Platform
+# 📈 Full-Stack AI Algorithmic Trading Platform
 
 ![Python](https://img.shields.io/badge/Python-3.12+-blue.svg)
 ![Django](https://img.shields.io/badge/Django-5.0+-green.svg)
@@ -9,7 +9,7 @@
 
 *Developed by Mostafa Anwar*
 
-An advanced full-stack trading platform powered by Reinforcement Learning and Deep Learning algorithms. Train intelligent agents to make profitable trading decisions using state-of-the-art AI techniques including LSTM, Transformers, and Deep Q-Networks.
+An advanced full-stack AI trading platform powered by Reinforcement Learning and Deep Learning algorithms. Train intelligent agents to make profitable trading decisions using state-of-the-art AI techniques including LSTM, Transformers, and Deep Q-Networks.
 
 ## 🎯 Key Features
 
