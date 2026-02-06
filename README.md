@@ -68,7 +68,21 @@ A sophisticated full-stack algorithmic trading platform that leverages cutting-e
 ### Trading Dashboard
 
 <div align="center">
+  <img src="examples/img/trading.jpeg" alt="Trading Dashboard" width="800"/>
   <p><i>Advanced trading interface with real-time charts and AI predictions</i></p>
+  
+  <img src="examples/img/alphastar.gif" alt="AI Agent Training" width="600"/>
+  <p><i>Reinforcement Learning agent training visualization</i></p>
+  
+  <img src="examples/img/pipeline.jpeg" alt="ML Pipeline" width="700"/>
+  <p><i>Complete ML pipeline for algorithmic trading</i></p>
+  
+  <img src="examples/img/components.jpeg" alt="System Architecture" width="700"/>
+  <p><i>System architecture and component design</i></p>
+  
+  <img src="examples/img/environment.jpeg" alt="Trading Environment" width="700"/>
+  <p><i>Trading environment setup and configuration</i></p>
+  
   <p><b>Note:</b> This is a production-ready algorithmic trading platform with live market data integration</p>
 </div>
 
