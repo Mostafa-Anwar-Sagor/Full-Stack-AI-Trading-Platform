@@ -21,7 +21,13 @@
 <div align="center">
 
 ### 🏠 Landing Page
-![Landing Page](screenshots/home.png)
+![Landing Page](screenshots/landing%20page.png)
+
+### ✨ Features
+![Features](screenshots/features.png)
+
+### 💰 Pricing
+![Pricing](screenshots/pricing.png)
 
 ### 📊 Trading Terminal
 ![Trading Terminal](screenshots/trading.png)
@@ -32,8 +38,8 @@
 ### 🌍 Market Overview
 ![Market Overview](screenshots/market.png)
 
-### 🤖 AI Agents
-![AI Agents](screenshots/agents.png)
+### 💼 Portfolio
+![Portfolio](screenshots/portfolio.png)
 
 </div>
 
