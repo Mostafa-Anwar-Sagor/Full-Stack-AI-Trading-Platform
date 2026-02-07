@@ -1,0 +1,456 @@
+{% extends 'base.html' %}
+{% block title %}AI Agents - AI Trading Platform{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="/static/css/dashboard.css">
+<style>
+    .agents-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 24px;
+    }
+
+    .agent-stats {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 16px;
+        margin-bottom: 24px;
+    }
+
+    .agent-stat {
+        background: var(--bg-card);
+        border-radius: 14px;
+        padding: 20px;
+        border: 1px solid var(--border);
+    }
+
+    .as-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 12px;
+        font-size: 18px;
+    }
+
+    .as-icon.purple {
+        background: rgba(99, 102, 241, 0.15);
+        color: var(--accent);
+    }
+
+    .as-icon.green {
+        background: rgba(16, 185, 129, 0.15);
+        color: var(--success);
+    }
+
+    .as-icon.blue {
+        background: rgba(59, 130, 246, 0.15);
+        color: #3b82f6;
+    }
+
+    .as-icon.orange {
+        background: rgba(245, 158, 11, 0.15);
+        color: var(--warning);
+    }
+
+    .as-value {
+        font-size: 24px;
+        font-weight: 700;
+    }
+
+    .as-label {
+        font-size: 13px;
+        color: var(--text-secondary);
+        margin-top: 4px;
+    }
+
+    .agents-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+        gap: 20px;
+    }
+
+    .agent-full-card {
+        background: var(--bg-card);
+        border-radius: 20px;
+        padding: 24px;
+        border: 1px solid var(--border);
+        transition: all 0.3s;
+    }
+
+    .agent-full-card:hover {
+        border-color: rgba(99, 102, 241, 0.3);
+        box-shadow: 0 20px 60px rgba(99, 102, 241, 0.1);
+    }
+
+    .afc-header {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 16px;
+    }
+
+    .afc-type {
+        padding: 6px 12px;
+        border-radius: 8px;
+        font-size: 12px;
+        font-weight: 700;
+        text-transform: uppercase;
+    }
+
+    .afc-type.ppo {
+        background: rgba(99, 102, 241, 0.15);
+        color: var(--accent);
+    }
+
+    .afc-type.dqn {
+        background: rgba(16, 185, 129, 0.15);
+        color: var(--success);
+    }
+
+    .afc-type.lstm {
+        background: rgba(245, 158, 11, 0.15);
+        color: var(--warning);
+    }
+
+    .afc-type.a3c {
+        background: rgba(236, 72, 153, 0.15);
+        color: #ec4899;
+    }
+
+    .afc-status {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 12px;
+    }
+
+    .status-indicator {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+    }
+
+    .status-indicator.running {
+        background: var(--success);
+        animation: blink 2s infinite;
+    }
+
+    .status-indicator.idle {
+        background: var(--text-muted);
+    }
+
+    .status-indicator.training {
+        background: var(--warning);
+        animation: blink 1s infinite;
+    }
+
+    @keyframes blink {
+
+        0%,
+        100% {
+            opacity: 1
+        }
+
+        50% {
+            opacity: 0.4
+        }
+    }
+
+    .afc-name {
+        font-size: 18px;
+        font-weight: 700;
+        margin-bottom: 4px;
+    }
+
+    .afc-pair {
+        font-size: 13px;
+        color: var(--text-secondary);
+        margin-bottom: 20px;
+    }
+
+    .afc-metrics {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+        padding: 16px 0;
+        border-top: 1px solid var(--border);
+        border-bottom: 1px solid var(--border);
+        margin-bottom: 16px;
+    }
+
+    .afc-metric {
+        text-align: center;
+    }
+
+    .afc-metric-value {
+        font-size: 18px;
+        font-weight: 700;
+    }
+
+    .afc-metric-label {
+        font-size: 11px;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        margin-top: 2px;
+    }
+
+    .afc-chart {
+        height: 80px;
+        margin-bottom: 16px;
+    }
+
+    .afc-actions {
+        display: flex;
+        gap: 10px;
+    }
+
+    .afc-btn {
+        flex: 1;
+        padding: 12px;
+        border-radius: 10px;
+        font-size: 13px;
+        font-weight: 600;
+        border: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        transition: all 0.2s;
+    }
+
+    .afc-btn.start {
+        background: rgba(16, 185, 129, 0.15);
+        color: var(--success);
+    }
+
+    .afc-btn.stop {
+        background: rgba(239, 68, 68, 0.15);
+        color: var(--danger);
+    }
+
+    .afc-btn.details {
+        background: var(--bg-tertiary);
+        color: var(--text-primary);
+    }
+
+    .afc-btn:hover {
+        transform: scale(1.02);
+    }
+
+    @media (max-width: 768px) {
+        .agent-stats {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="bg-gradient"></div>
+<button class="mobile-menu-toggle" id="mobile-menu-toggle"><i class="fas fa-bars"></i></button>
+<aside class="sidebar" id="sidebar">
+    <div class="logo">
+        <div class="logo-icon">📈</div><span class="logo-text">AI Trading</span>
+    </div>
+    <nav class="nav-section">
+        <div class="nav-section-title">Main</div>
+        <a href="/" class="nav-item"><i class="fas fa-home"></i><span>Home</span></a>
+        <a href="/dashboard/" class="nav-item"><i class="fas fa-chart-line"></i><span>Dashboard</span></a>
+        <a href="/portfolio/" class="nav-item"><i class="fas fa-wallet"></i><span>Portfolio</span></a>
+        <a href="/trading/" class="nav-item"><i class="fas fa-exchange-alt"></i><span>Trading</span></a>
+        <a href="/market/" class="nav-item"><i class="fas fa-globe"></i><span>Market</span></a>
+    </nav>
+    <nav class="nav-section">
+        <div class="nav-section-title">AI Features</div><a href="/agents/" class="nav-item active"><i
+                class="fas fa-robot"></i><span>AI Agents</span></a><a href="/predictions/" class="nav-item"><i
+                class="fas fa-brain"></i><span>Predictions</span></a><a href="/backtest/" class="nav-item"><i
+                class="fas fa-history"></i><span>Backtest</span></a><a href="/risk/" class="nav-item"><i
+                class="fas fa-shield-alt"></i><span>Risk</span></a>
+    </nav>
+    <nav class="nav-section" style="margin-top:auto"><a href="/settings/" class="nav-item"><i
+                class="fas fa-cog"></i><span>Settings</span></a><a href="/logout/" class="nav-item"><i
+                class="fas fa-sign-out-alt"></i><span>Logout</span></a></nav>
+</aside>
+
+<main class="main-content">
+    <header class="header">
+        <div class="header-left">
+            <h1>AI Trading Agents</h1>
+            <p>Manage your autonomous trading agents</p>
+        </div>
+        <div class="header-right"><button class="btn btn-primary" onclick="openCreateModal()"><i
+                    class="fas fa-plus"></i><span>Create Agent</span></button></div>
+    </header>
+
+    <div class="agent-stats">
+        <div class="agent-stat">
+            <div class="as-icon purple"><i class="fas fa-robot"></i></div>
+            <div class="as-value">4</div>
+            <div class="as-label">Total Agents</div>
+        </div>
+        <div class="agent-stat">
+            <div class="as-icon green"><i class="fas fa-play"></i></div>
+            <div class="as-value">3</div>
+            <div class="as-label">Running</div>
+        </div>
+        <div class="agent-stat">
+            <div class="as-icon blue"><i class="fas fa-dollar-sign"></i></div>
+            <div class="as-value">$5,783</div>
+            <div class="as-label">Total Profit</div>
+        </div>
+        <div class="agent-stat">
+            <div class="as-icon orange"><i class="fas fa-percentage"></i></div>
+            <div class="as-value">68.4%</div>
+            <div class="as-label">Avg Win Rate</div>
+        </div>
+    </div>
+
+    <div class="agents-list">
+        <div class="agent-full-card">
+            <div class="afc-header"><span class="afc-type ppo">PPO</span>
+                <div class="afc-status"><span class="status-indicator running"></span>Running</div>
+            </div>
+            <div class="afc-name">PPO Alpha Trader</div>
+            <div class="afc-pair"><i class="fas fa-link"></i> BTC/USD</div>
+            <div class="afc-metrics">
+                <div class="afc-metric">
+                    <div class="afc-metric-value" style="color:var(--success)">72.5%</div>
+                    <div class="afc-metric-label">Win Rate</div>
+                </div>
+                <div class="afc-metric">
+                    <div class="afc-metric-value" style="color:var(--success)">+$2,847</div>
+                    <div class="afc-metric-label">Total P&L</div>
+                </div>
+                <div class="afc-metric">
+                    <div class="afc-metric-value">156</div>
+                    <div class="afc-metric-label">Trades</div>
+                </div>
+            </div>
+            <div class="afc-chart"><canvas id="agent-chart-1"></canvas></div>
+            <div class="afc-actions"><button class="afc-btn stop"><i class="fas fa-stop"></i>Stop</button><button
+                    class="afc-btn details"><i class="fas fa-chart-bar"></i>Details</button></div>
+        </div>
+        <div class="agent-full-card">
+            <div class="afc-header"><span class="afc-type dqn">DQN</span>
+                <div class="afc-status"><span class="status-indicator running"></span>Running</div>
+            </div>
+            <div class="afc-name">DQN Momentum</div>
+            <div class="afc-pair"><i class="fas fa-link"></i> ETH/USD</div>
+            <div class="afc-metrics">
+                <div class="afc-metric">
+                    <div class="afc-metric-value" style="color:var(--success)">65.8%</div>
+                    <div class="afc-metric-label">Win Rate</div>
+                </div>
+                <div class="afc-metric">
+                    <div class="afc-metric-value" style="color:var(--success)">+$1,523</div>
+                    <div class="afc-metric-label">Total P&L</div>
+                </div>
+                <div class="afc-metric">
+                    <div class="afc-metric-value">89</div>
+                    <div class="afc-metric-label">Trades</div>
+                </div>
+            </div>
+            <div class="afc-chart"><canvas id="agent-chart-2"></canvas></div>
+            <div class="afc-actions"><button class="afc-btn stop"><i class="fas fa-stop"></i>Stop</button><button
+                    class="afc-btn details"><i class="fas fa-chart-bar"></i>Details</button></div>
+        </div>
+        <div class="agent-full-card">
+            <div class="afc-header"><span class="afc-type lstm">LSTM</span>
+                <div class="afc-status"><span class="status-indicator running"></span>Running</div>
+            </div>
+            <div class="afc-name">LSTM Predictor</div>
+            <div class="afc-pair"><i class="fas fa-link"></i> SOL/USD</div>
+            <div class="afc-metrics">
+                <div class="afc-metric">
+                    <div class="afc-metric-value" style="color:var(--success)">68.2%</div>
+                    <div class="afc-metric-label">Win Rate</div>
+                </div>
+                <div class="afc-metric">
+                    <div class="afc-metric-value" style="color:var(--success)">+$956</div>
+                    <div class="afc-metric-label">Total P&L</div>
+                </div>
+                <div class="afc-metric">
+                    <div class="afc-metric-value">67</div>
+                    <div class="afc-metric-label">Trades</div>
+                </div>
+            </div>
+            <div class="afc-chart"><canvas id="agent-chart-3"></canvas></div>
+            <div class="afc-actions"><button class="afc-btn stop"><i class="fas fa-stop"></i>Stop</button><button
+                    class="afc-btn details"><i class="fas fa-chart-bar"></i>Details</button></div>
+        </div>
+        <div class="agent-full-card">
+            <div class="afc-header"><span class="afc-type a3c">A3C</span>
+                <div class="afc-status"><span class="status-indicator idle"></span>Idle</div>
+            </div>
+            <div class="afc-name">A3C Multi-Asset</div>
+            <div class="afc-pair"><i class="fas fa-link"></i> MULTI</div>
+            <div class="afc-metrics">
+                <div class="afc-metric">
+                    <div class="afc-metric-value" style="color:var(--success)">58.9%</div>
+                    <div class="afc-metric-label">Win Rate</div>
+                </div>
+                <div class="afc-metric">
+                    <div class="afc-metric-value" style="color:var(--success)">+$456</div>
+                    <div class="afc-metric-label">Total P&L</div>
+                </div>
+                <div class="afc-metric">
+                    <div class="afc-metric-value">34</div>
+                    <div class="afc-metric-label">Trades</div>
+                </div>
+            </div>
+            <div class="afc-chart"><canvas id="agent-chart-4"></canvas></div>
+            <div class="afc-actions"><button class="afc-btn start"><i class="fas fa-play"></i>Start</button><button
+                    class="afc-btn details"><i class="fas fa-chart-bar"></i>Details</button></div>
+        </div>
+    </div>
+</main>
+
+<div class="modal-overlay" id="create-modal">
+    <div class="modal">
+        <div class="modal-header">
+            <h3>Create AI Agent</h3><button class="modal-close" onclick="closeModal()"><i
+                    class="fas fa-times"></i></button>
+        </div>
+        <div class="modal-body">
+            <div class="form-group"><label>Agent Type</label><select id="agent-type" class="form-input">
+                    <option value="ppo">PPO - Proximal Policy Optimization</option>
+                    <option value="dqn">DQN - Deep Q-Network</option>
+                    <option value="lstm">LSTM - Price Prediction</option>
+                    <option value="a3c">A3C - Async Actor-Critic</option>
+                </select></div>
+            <div class="form-group"><label>Trading Pair</label><select id="agent-pair" class="form-input">
+                    <option>BTC/USD</option>
+                    <option>ETH/USD</option>
+                    <option>SOL/USD</option>
+                </select></div>
+            <div class="form-group"><label>Training Episodes</label><input type="number" id="episodes"
+                    class="form-input" value="1000"></div>
+            <div class="form-group"><label>Learning Rate</label><input type="number" id="lr" class="form-input"
+                    value="0.0003" step="0.0001"></div>
+            <div class="modal-actions"><button class="btn btn-secondary" onclick="closeModal()">Cancel</button><button
+                    class="btn btn-primary" onclick="createAgent()"><i class="fas fa-play"></i>Train Agent</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="toast-container" id="toast-container"></div>
+
+<script>
+    document.getElementById('mobile-menu-toggle')?.addEventListener('click', () => document.getElementById('sidebar').classList.toggle('active'));
+    function openCreateModal() { document.getElementById('create-modal').classList.add('active'); }
+    function closeModal() { document.getElementById('create-modal').classList.remove('active'); }
+    function createAgent() { showToast('Agent training started...', 'success'); closeModal(); }
+    function showToast(msg, type) { const t = document.createElement('div'); t.className = `toast ${type}`; t.innerHTML = `<i class="fas fa-check-circle"></i>${msg}`; document.getElementById('toast-container').appendChild(t); setTimeout(() => t.remove(), 3000); }
+
+    // Mini charts
+    document.querySelectorAll('[id^="agent-chart-"]').forEach((canvas, i) => {
+        const ctx = canvas.getContext('2d');
+        const data = []; let v = 1000;
+        for (let j = 0; j < 20; j++) { v *= 1 + (Math.random() - 0.4) * 0.05; data.push(v); }
+        new Chart(ctx, { type: 'line', data: { labels: Array(20).fill(''), datasets: [{ data, borderColor: '#10b981', borderWidth: 2, fill: false, tension: 0.4, pointRadius: 0 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { display: false }, y: { display: false } } } });
+    });
+</script>
+{% endblock %}

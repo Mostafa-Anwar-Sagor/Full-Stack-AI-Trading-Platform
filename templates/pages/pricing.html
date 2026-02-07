@@ -1,0 +1,398 @@
+{% extends 'base.html' %}
+{% block title %}Pricing - AI Trading Platform{% endblock %}
+{% block extra_css %}
+<style>
+    .bg-gradient {
+        position: fixed;
+        inset: 0;
+        z-index: -1;
+        background: radial-gradient(ellipse at 30% 20%, rgba(99, 102, 241, 0.15) 0%, transparent 50%), radial-gradient(ellipse at 70% 80%, rgba(139, 92, 246, 0.1) 0%, transparent 50%);
+    }
+
+    .nav {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 100;
+        padding: 16px 0;
+        background: rgba(17, 24, 39, 0.95);
+        backdrop-filter: blur(20px);
+        border-bottom: 1px solid var(--border);
+    }
+
+    .nav-inner {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .logo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 20px;
+        font-weight: 800;
+    }
+
+    .logo-icon {
+        width: 40px;
+        height: 40px;
+        background: var(--accent-gradient);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+    }
+
+    .nav-links {
+        display: flex;
+        align-items: center;
+        gap: 32px;
+    }
+
+    .nav-link {
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--text-secondary);
+        transition: color 0.2s;
+    }
+
+    .nav-link:hover,
+    .nav-link.active {
+        color: white;
+    }
+
+    .nav-buttons {
+        display: flex;
+        gap: 12px;
+    }
+
+    .hero {
+        padding: 140px 0 60px;
+        text-align: center;
+    }
+
+    .hero h1 {
+        font-size: 48px;
+        font-weight: 800;
+        margin-bottom: 20px;
+        background: linear-gradient(135deg, #fff 0%, #c4b5fd 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .hero p {
+        font-size: 18px;
+        color: var(--text-secondary);
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .pricing {
+        padding: 60px 0 120px;
+    }
+
+    .pricing-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 24px;
+        max-width: 1100px;
+        margin: 0 auto;
+    }
+
+    .pricing-card {
+        background: var(--bg-card);
+        border-radius: 24px;
+        padding: 40px;
+        border: 1px solid var(--border);
+        position: relative;
+        transition: all 0.3s;
+    }
+
+    .pricing-card:hover {
+        transform: translateY(-8px);
+        border-color: rgba(99, 102, 241, 0.3);
+    }
+
+    .pricing-card.featured {
+        border: 2px solid var(--accent);
+        box-shadow: 0 20px 60px rgba(99, 102, 241, 0.2);
+    }
+
+    .popular-badge {
+        position: absolute;
+        top: -12px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: var(--accent-gradient);
+        padding: 6px 20px;
+        border-radius: 100px;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .plan-name {
+        font-size: 20px;
+        font-weight: 700;
+        margin-bottom: 8px;
+    }
+
+    .plan-desc {
+        font-size: 14px;
+        color: var(--text-secondary);
+        margin-bottom: 24px;
+    }
+
+    .plan-price {
+        margin-bottom: 24px;
+    }
+
+    .plan-price .amount {
+        font-size: 48px;
+        font-weight: 800;
+    }
+
+    .plan-price .period {
+        font-size: 14px;
+        color: var(--text-muted);
+    }
+
+    .plan-features {
+        list-style: none;
+        margin-bottom: 32px;
+    }
+
+    .plan-features li {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 0;
+        border-bottom: 1px solid var(--border);
+        font-size: 14px;
+    }
+
+    .plan-features li:last-child {
+        border-bottom: none;
+    }
+
+    .plan-features i {
+        color: var(--success);
+        width: 20px;
+    }
+
+    .plan-features .disabled {
+        color: var(--text-muted);
+    }
+
+    .plan-features .disabled i {
+        color: var(--text-muted);
+    }
+
+    .plan-btn {
+        width: 100%;
+        padding: 16px;
+        font-size: 15px;
+        justify-content: center;
+    }
+
+    .faq {
+        padding: 80px 0;
+    }
+
+    .faq-title {
+        text-align: center;
+        font-size: 32px;
+        font-weight: 700;
+        margin-bottom: 48px;
+    }
+
+    .faq-grid {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .faq-item {
+        background: var(--bg-card);
+        border-radius: 14px;
+        margin-bottom: 12px;
+        border: 1px solid var(--border);
+        overflow: hidden;
+    }
+
+    .faq-question {
+        padding: 20px 24px;
+        font-weight: 600;
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .faq-question:hover {
+        background: rgba(99, 102, 241, 0.05);
+    }
+
+    .faq-answer {
+        padding: 0 24px 20px;
+        font-size: 14px;
+        color: var(--text-secondary);
+        line-height: 1.7;
+        display: none;
+    }
+
+    .faq-item.active .faq-answer {
+        display: block;
+    }
+
+    .faq-item.active .faq-question i {
+        transform: rotate(180deg);
+    }
+
+    .footer {
+        padding: 60px 0;
+        border-top: 1px solid var(--border);
+    }
+
+    .footer-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    @media (max-width: 1024px) {
+        .pricing-grid {
+            grid-template-columns: 1fr 1fr;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .pricing-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .nav-links {
+            display: none;
+        }
+
+        .hero h1 {
+            font-size: 32px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="bg-gradient"></div>
+<nav class="nav">
+    <div class="container nav-inner"><a href="/" class="logo">
+            <div class="logo-icon">📈</div><span>AI Trading</span>
+        </a>
+        <div class="nav-links"><a href="/" class="nav-link">Home</a><a href="/features/" class="nav-link">Features</a><a
+                href="/pricing/" class="nav-link active">Pricing</a><a href="/about/" class="nav-link">About</a></div>
+        <div class="nav-buttons"><a href="/login/" class="btn btn-secondary">Sign In</a><a href="/register/"
+                class="btn btn-primary">Get Started</a></div>
+    </div>
+</nav>
+
+<section class="hero">
+    <div class="container">
+        <h1>Simple, Transparent Pricing</h1>
+        <p>Choose the plan that fits your trading needs. All plans include AI-powered insights.</p>
+    </div>
+</section>
+
+<section class="pricing">
+    <div class="container">
+        <div class="pricing-grid">
+            <div class="pricing-card">
+                <div class="plan-name">Starter</div>
+                <div class="plan-desc">Perfect for beginners</div>
+                <div class="plan-price"><span class="amount">$0</span><span class="period">/month</span></div>
+                <ul class="plan-features">
+                    <li><i class="fas fa-check"></i>Paper trading</li>
+                    <li><i class="fas fa-check"></i>Basic AI signals</li>
+                    <li><i class="fas fa-check"></i>5 technical indicators</li>
+                    <li><i class="fas fa-check"></i>1 AI agent</li>
+                    <li class="disabled"><i class="fas fa-times"></i>Advanced predictions</li>
+                    <li class="disabled"><i class="fas fa-times"></i>Backtesting</li>
+                </ul>
+                <a href="/register/" class="btn btn-secondary plan-btn">Start Free</a>
+            </div>
+
+            <div class="pricing-card featured">
+                <div class="popular-badge">MOST POPULAR</div>
+                <div class="plan-name">Pro</div>
+                <div class="plan-desc">For serious traders</div>
+                <div class="plan-price"><span class="amount">$49</span><span class="period">/month</span></div>
+                <ul class="plan-features">
+                    <li><i class="fas fa-check"></i>Live trading</li>
+                    <li><i class="fas fa-check"></i>Advanced AI signals</li>
+                    <li><i class="fas fa-check"></i>All indicators</li>
+                    <li><i class="fas fa-check"></i>5 AI agents</li>
+                    <li><i class="fas fa-check"></i>LSTM predictions</li>
+                    <li><i class="fas fa-check"></i>Full backtesting</li>
+                </ul>
+                <a href="/register/" class="btn btn-primary plan-btn">Start Pro Trial</a>
+            </div>
+
+            <div class="pricing-card">
+                <div class="plan-name">Enterprise</div>
+                <div class="plan-desc">For teams & funds</div>
+                <div class="plan-price"><span class="amount">$299</span><span class="period">/month</span></div>
+                <ul class="plan-features">
+                    <li><i class="fas fa-check"></i>Everything in Pro</li>
+                    <li><i class="fas fa-check"></i>Unlimited agents</li>
+                    <li><i class="fas fa-check"></i>Priority API access</li>
+                    <li><i class="fas fa-check"></i>Custom models</li>
+                    <li><i class="fas fa-check"></i>Dedicated support</li>
+                    <li><i class="fas fa-check"></i>White-label option</li>
+                </ul>
+                <a href="/register/" class="btn btn-secondary plan-btn">Contact Sales</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="faq">
+    <div class="container">
+        <h2 class="faq-title">Frequently Asked Questions</h2>
+        <div class="faq-grid">
+            <div class="faq-item">
+                <div class="faq-question">Can I try before I buy?<i class="fas fa-chevron-down"></i></div>
+                <div class="faq-answer">Yes! Our Starter plan is completely free and includes paper trading and basic AI
+                    signals so you can test the platform risk-free.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question">Is my trading data secure?<i class="fas fa-chevron-down"></i></div>
+                <div class="faq-answer">Absolutely. We use bank-level encryption and never store your exchange API keys
+                    on our servers. All connections are encrypted end-to-end.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question">Can I cancel anytime?<i class="fas fa-chevron-down"></i></div>
+                <div class="faq-answer">Yes, you can cancel your subscription at any time. There are no long-term
+                    contracts or hidden fees.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question">What exchanges are supported?<i class="fas fa-chevron-down"></i></div>
+                <div class="faq-answer">We currently support major exchanges including Binance, Coinbase, Kraken, and
+                    more. Enterprise plans include integration support.</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<footer class="footer">
+    <div class="container footer-content">
+        <div class="logo">
+            <div class="logo-icon">📈</div><span>AI Trading</span>
+        </div>
+        <div style="color:var(--text-muted);font-size:13px">© 2026 AI Trading Platform</div>
+    </div>
+</footer>
+
+<script>
+    document.querySelectorAll('.faq-question').forEach(q => q.addEventListener('click', function () { this.parentElement.classList.toggle('active'); }));
+</script>
+{% endblock %}

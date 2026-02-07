@@ -1,0 +1,487 @@
+{% extends 'base.html' %}
+{% block title %}About Us - AI Trading Platform{% endblock %}
+{% block extra_css %}
+<style>
+    .bg-gradient {
+        position: fixed;
+        inset: 0;
+        z-index: -1;
+        background: radial-gradient(ellipse at 30% 20%, rgba(99, 102, 241, 0.15) 0%, transparent 50%), radial-gradient(ellipse at 70% 80%, rgba(139, 92, 246, 0.1) 0%, transparent 50%);
+    }
+
+    .nav {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 100;
+        padding: 16px 0;
+        background: rgba(17, 24, 39, 0.95);
+        backdrop-filter: blur(20px);
+        border-bottom: 1px solid var(--border);
+    }
+
+    .nav-inner {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .logo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 20px;
+        font-weight: 800;
+    }
+
+    .logo-icon {
+        width: 40px;
+        height: 40px;
+        background: var(--accent-gradient);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+    }
+
+    .nav-links {
+        display: flex;
+        align-items: center;
+        gap: 32px;
+    }
+
+    .nav-link {
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--text-secondary);
+        transition: color 0.2s;
+    }
+
+    .nav-link:hover,
+    .nav-link.active {
+        color: white;
+    }
+
+    .nav-buttons {
+        display: flex;
+        gap: 12px;
+    }
+
+    .hero {
+        padding: 140px 0 60px;
+        text-align: center;
+    }
+
+    .hero h1 {
+        font-size: 48px;
+        font-weight: 800;
+        margin-bottom: 20px;
+        background: linear-gradient(135deg, #fff 0%, #c4b5fd 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .hero p {
+        font-size: 18px;
+        color: var(--text-secondary);
+        max-width: 700px;
+        margin: 0 auto;
+        line-height: 1.7;
+    }
+
+    .about-section {
+        padding: 80px 0;
+    }
+
+    .about-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 60px;
+        align-items: center;
+    }
+
+    .about-content h2 {
+        font-size: 32px;
+        font-weight: 700;
+        margin-bottom: 24px;
+    }
+
+    .about-content p {
+        color: var(--text-secondary);
+        font-size: 16px;
+        line-height: 1.8;
+        margin-bottom: 20px;
+    }
+
+    .about-visual {
+        background: var(--bg-card);
+        border-radius: 24px;
+        padding: 48px;
+        border: 1px solid var(--border);
+        text-align: center;
+    }
+
+    .about-visual i {
+        font-size: 100px;
+        background: var(--accent-gradient);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .stats-section {
+        padding: 60px 0;
+        background: var(--bg-secondary);
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 32px;
+        text-align: center;
+    }
+
+    .stat-item {}
+
+    .stat-value {
+        font-size: 48px;
+        font-weight: 800;
+        background: var(--accent-gradient);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .stat-label {
+        font-size: 14px;
+        color: var(--text-secondary);
+        margin-top: 8px;
+    }
+
+    .team-section {
+        padding: 80px 0;
+    }
+
+    .team-title {
+        text-align: center;
+        font-size: 32px;
+        font-weight: 700;
+        margin-bottom: 48px;
+    }
+
+    .team-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 24px;
+    }
+
+    .team-card {
+        background: var(--bg-card);
+        border-radius: 20px;
+        padding: 32px;
+        border: 1px solid var(--border);
+        text-align: center;
+        transition: all 0.3s;
+    }
+
+    .team-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 20px 60px rgba(99, 102, 241, 0.15);
+    }
+
+    .team-avatar {
+        width: 100px;
+        height: 100px;
+        background: var(--accent-gradient);
+        border-radius: 50%;
+        margin: 0 auto 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 40px;
+    }
+
+    .team-name {
+        font-size: 18px;
+        font-weight: 700;
+        margin-bottom: 4px;
+    }
+
+    .team-role {
+        font-size: 13px;
+        color: var(--accent);
+        margin-bottom: 12px;
+    }
+
+    .team-bio {
+        font-size: 13px;
+        color: var(--text-secondary);
+        line-height: 1.6;
+    }
+
+    .values-section {
+        padding: 80px 0;
+    }
+
+    .values-title {
+        text-align: center;
+        font-size: 32px;
+        font-weight: 700;
+        margin-bottom: 48px;
+    }
+
+    .values-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 24px;
+    }
+
+    .value-card {
+        background: var(--bg-card);
+        border-radius: 20px;
+        padding: 32px;
+        border: 1px solid var(--border);
+        text-align: center;
+    }
+
+    .value-icon {
+        font-size: 48px;
+        margin-bottom: 20px;
+    }
+
+    .value-title {
+        font-size: 20px;
+        font-weight: 700;
+        margin-bottom: 12px;
+    }
+
+    .value-desc {
+        font-size: 14px;
+        color: var(--text-secondary);
+        line-height: 1.6;
+    }
+
+    .cta-section {
+        padding: 80px 0;
+        text-align: center;
+    }
+
+    .cta-box {
+        background: var(--accent-gradient);
+        border-radius: 32px;
+        padding: 60px;
+    }
+
+    .cta-box h2 {
+        font-size: 36px;
+        font-weight: 800;
+        margin-bottom: 16px;
+    }
+
+    .cta-box p {
+        font-size: 18px;
+        opacity: 0.9;
+        margin-bottom: 24px;
+    }
+
+    .cta-box .btn {
+        background: white;
+        color: var(--accent);
+    }
+
+    .footer {
+        padding: 60px 0;
+        border-top: 1px solid var(--border);
+    }
+
+    .footer-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    @media (max-width: 1024px) {
+        .about-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .stats-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .team-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media (max-width: 768px) {
+        .nav-links {
+            display: none;
+        }
+
+        .hero h1 {
+            font-size: 32px;
+        }
+
+        .values-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .team-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .stats-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .footer-content {
+            flex-direction: column;
+            gap: 24px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="bg-gradient"></div>
+<nav class="nav">
+    <div class="container nav-inner"><a href="/" class="logo">
+            <div class="logo-icon">📈</div><span>AI Trading</span>
+        </a>
+        <div class="nav-links"><a href="/" class="nav-link">Home</a><a href="/features/" class="nav-link">Features</a><a
+                href="/pricing/" class="nav-link">Pricing</a><a href="/about/" class="nav-link active">About</a></div>
+        <div class="nav-buttons"><a href="/login/" class="btn btn-secondary">Sign In</a><a href="/register/"
+                class="btn btn-primary">Get Started</a></div>
+    </div>
+</nav>
+
+<section class="hero">
+    <div class="container">
+        <h1>About AI Trading Platform</h1>
+        <p>We're on a mission to democratize algorithmic trading by making advanced AI and machine learning tools
+            accessible to everyone, from beginners to professional traders.</p>
+    </div>
+</section>
+
+<section class="about-section">
+    <div class="container">
+        <div class="about-grid">
+            <div class="about-content">
+                <h2>Our Story</h2>
+                <p>Founded in 2024 by a team of quantitative traders and AI researchers, AI Trading Platform was born
+                    from a simple idea: the most powerful trading algorithms shouldn't be reserved for hedge funds and
+                    institutional investors.</p>
+                <p>We've built a platform that combines cutting-edge machine learning models—including LSTM neural
+                    networks and reinforcement learning agents—with an intuitive interface that anyone can use.</p>
+                <p>Today, we serve over 50,000 traders worldwide, processing billions in trading volume and helping our
+                    users make smarter, data-driven decisions.</p>
+            </div>
+            <div class="about-visual"><i class="fas fa-rocket"></i></div>
+        </div>
+    </div>
+</section>
+
+<section class="stats-section">
+    <div class="container">
+        <div class="stats-grid">
+            <div class="stat-item">
+                <div class="stat-value">$2.5B+</div>
+                <div class="stat-label">Trading Volume</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">50K+</div>
+                <div class="stat-label">Active Traders</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">99.9%</div>
+                <div class="stat-label">Platform Uptime</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">24/7</div>
+                <div class="stat-label">Support Available</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="team-section">
+    <div class="container">
+        <h2 class="team-title">Meet Our Team</h2>
+        <div class="team-grid">
+            <div class="team-card">
+                <div class="team-avatar">👨‍💼</div>
+                <div class="team-name">Alex Chen</div>
+                <div class="team-role">CEO & Co-Founder</div>
+                <div class="team-bio">Former quant trader at Goldman Sachs with 15+ years in algorithmic trading.</div>
+            </div>
+            <div class="team-card">
+                <div class="team-avatar">👩‍💻</div>
+                <div class="team-name">Sarah Mitchell</div>
+                <div class="team-role">CTO & Co-Founder</div>
+                <div class="team-bio">AI researcher from DeepMind, specializing in reinforcement learning.</div>
+            </div>
+            <div class="team-card">
+                <div class="team-avatar">👨‍🔬</div>
+                <div class="team-name">Dr. James Wu</div>
+                <div class="team-role">Head of AI Research</div>
+                <div class="team-bio">PhD in Machine Learning from MIT, expert in time-series forecasting.</div>
+            </div>
+            <div class="team-card">
+                <div class="team-avatar">👩‍🎨</div>
+                <div class="team-name">Emma Rodriguez</div>
+                <div class="team-role">VP of Product</div>
+                <div class="team-bio">Previously at Coinbase, focused on making trading accessible to all.</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="values-section">
+    <div class="container">
+        <h2 class="values-title">Our Values</h2>
+        <div class="values-grid">
+            <div class="value-card">
+                <div class="value-icon">🔒</div>
+                <div class="value-title">Security First</div>
+                <div class="value-desc">Bank-grade encryption and never storing sensitive data. Your security is our top
+                    priority.</div>
+            </div>
+            <div class="value-card">
+                <div class="value-icon">🎯</div>
+                <div class="value-title">Transparency</div>
+                <div class="value-desc">Clear pricing, honest performance metrics, and no hidden fees. What you see is
+                    what you get.</div>
+            </div>
+            <div class="value-card">
+                <div class="value-icon">🚀</div>
+                <div class="value-title">Innovation</div>
+                <div class="value-desc">Constantly pushing the boundaries of AI in trading with cutting-edge research.
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="cta-section">
+    <div class="container">
+        <div class="cta-box">
+            <h2>Ready to Start Trading?</h2>
+            <p>Join thousands of traders already using AI to make smarter decisions</p>
+            <a href="/register/" class="btn btn-lg"><i class="fas fa-rocket"></i>Create Free Account</a>
+        </div>
+    </div>
+</section>
+
+<footer class="footer">
+    <div class="container footer-content">
+        <div class="logo">
+            <div class="logo-icon">📈</div><span>AI Trading</span>
+        </div>
+        <div style="color:var(--text-muted);font-size:13px">© 2026 AI Trading Platform. All rights reserved.</div>
+    </div>
+</footer>
+{% endblock %}

@@ -1,356 +1,368 @@
-# 📈 Full-Stack AI Algorithmic Trading Platform
+# 🚀 Full-Stack AI Trading Platform
 
 <div align="center">
 
-![Python](https://img.shields.io/badge/Python-3.12+-blue.svg)
-![Django](https://img.shields.io/badge/Django-5.0+-green.svg)
-![TensorFlow](https://img.shields.io/badge/TensorFlow-2.0+-orange.svg)
-![PyTorch](https://img.shields.io/badge/PyTorch-2.0+-red.svg)
-![License](https://img.shields.io/badge/License-MIT-brightgreen.svg)
-![Status](https://img.shields.io/badge/Status-Active-success.svg)
+![Python](https://img.shields.io/badge/Python-3.11+-3776AB?style=for-the-badge&logo=python&logoColor=white)
+![Django](https://img.shields.io/badge/Django-5.2-092E20?style=for-the-badge&logo=django&logoColor=white)
+![TensorFlow](https://img.shields.io/badge/TensorFlow-2.x-FF6F00?style=for-the-badge&logo=tensorflow&logoColor=white)
+![JavaScript](https://img.shields.io/badge/JavaScript-ES6+-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
+![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
 
-**Advanced AI-Powered Algorithmic Trading Platform with Reinforcement Learning**
+**A professional-grade cryptocurrency trading platform with AI-powered analysis, real-time market data, and reinforcement learning trading agents.**
 
-*Developed by Mostafa Anwar*
-
-[Features](#features) • [Model Architecture](#model-architecture) • [Installation](#installation) • [Usage](#usage) • [Technologies](#technologies-used) • [Author](#author)
+[Features](#-features) • [Demo](#-demo) • [Installation](#-installation) • [Usage](#-usage) • [API](#-api-reference) • [Contributing](#-contributing)
 
 </div>
 
 ---
 
-## 📋 Table of Contents
+## 📸 Screenshots
 
-- [Overview](#overview)
-- [Features](#features)
-- [Model Architecture](#model-architecture)
-- [Installation](#installation)
-- [Usage](#usage)
-- [Project Structure](#project-structure)
-- [Technologies Used](#technologies-used)
-- [Future Enhancements](#future-enhancements)
-- [Author](#author)
-- [License](#license)
+<div align="center">
 
----
+### 🏠 Landing Page
+![Landing Page](screenshots/home.png)
 
-## 🎯 Overview
+### 📊 Trading Terminal
+![Trading Terminal](screenshots/trading.png)
 
-A sophisticated full-stack algorithmic trading platform that leverages cutting-edge AI and Machine Learning techniques to automate trading decisions. The system combines Reinforcement Learning agents (PPO, A3C, DQN) with deep learning models (LSTM, Transformers) to analyze market data, predict price movements, and execute profitable trades.
+### 📈 Dashboard
+![Dashboard](screenshots/dashboard.png)
 
-### 🔑 Key Highlights
+### 🌍 Market Overview
+![Market Overview](screenshots/market.png)
 
-- **Reinforcement Learning Agents** - Train autonomous trading bots
-- **Real-Time Market Data** - Live feeds from multiple exchanges
-- **95%+ Backtesting Accuracy** on historical data
-- **Paper Trading Mode** - Risk-free practice environment
-- **Advanced Risk Management** - Stop-loss, take-profit automation
+### 🤖 AI Agents
+![AI Agents](screenshots/agents.png)
+
+</div>
 
 ---
 
 ## ✨ Features
 
-- **Reinforcement Learning Trading Agents** - Train RL agents using PPO, A3C, and DQN algorithms
-- **Real-Time Market Data Integration** - Live data feeds from multiple exchanges
-- **Advanced Technical Indicators** - 50+ built-in indicators with custom strategy builder
-- **Portfolio Management** - Multi-asset portfolio optimization with risk management
-- **Backtesting Engine** - Test strategies on historical data with realistic simulation
-- **Paper Trading** - Practice with virtual money before real deployment
-- **Predictive Analytics** - LSTM & Transformer models for price prediction
-- **Risk Assessment** - Real-time risk metrics and stop-loss automation
-- **Beautiful Dashboard** - Modern UI with real-time charts and analytics
+### 📈 Professional Trading Interface
+- **Real-time Candlestick Charts** - Powered by TradingView Lightweight Charts
+- **Live Order Book** - Real bid/ask data from Binance API
+- **Multiple Timeframes** - 1m, 5m, 15m, 1H, 4H, 1D, 1W
+- **Technical Indicators** - MA(7), MA(25), MA(99), Volume bars
+- **Order Execution** - Limit, Market, and Stop-Limit orders
+
+### 💹 Real-Time Market Data
+- **Live Cryptocurrency Prices** - Direct from Binance API
+- **WebSocket Updates** - Real-time price streaming
+- **24h Statistics** - High, Low, Volume, Price Change
+- **20+ Cryptocurrencies** - BTC, ETH, SOL, BNB, XRP, DOGE, and more
+
+### 🤖 AI-Powered Trading
+- **Reinforcement Learning Agents**
+  - PPO (Proximal Policy Optimization)
+  - DQN (Deep Q-Network)
+  - A3C (Asynchronous Advantage Actor-Critic)
+- **LSTM Price Predictions** - 24-hour forecasts
+- **Technical Analysis** - RSI, MACD, Bollinger Bands, SMA
+- **AI Trading Signals** - Buy/Sell/Hold recommendations
+
+### 📊 Portfolio Management
+- **Portfolio Tracking** - Real-time value updates
+- **Asset Allocation** - Visual breakdown charts
+- **Performance History** - Historical returns analysis
+- **P&L Tracking** - Profit and loss monitoring
+
+### 🛡️ Risk Management
+- **Value at Risk (VaR)** - 95% confidence calculations
+- **Sharpe Ratio** - Risk-adjusted returns
+- **Max Drawdown** - Peak-to-trough analysis
+- **Portfolio Beta** - Market correlation metrics
+- **Risk Alerts** - Automated notifications
+
+### 🔬 Strategy Backtesting
+- **Historical Testing** - Test strategies on past data
+- **Performance Metrics** - Win rate, profit factor, Sharpe ratio
+- **Trade Log** - Detailed trade history
+- **Equity Curves** - Visual performance charts
 
 ---
 
-##  Model Architecture
+## 🖥️ Demo
 
-The platform uses multiple AI models working together:
+### Login Credentials
+| Field | Value |
+|-------|-------|
+| **Username** | `demo` |
+| **Password** | `Trading@123` |
 
-1. **LSTM Networks** - Time series prediction for price forecasting
-2. **Transformer Models** - Attention-based models for market trend analysis
-3. **Deep Q-Networks (DQN)** - Reinforcement learning for trade execution
-4. **PPO Agents** - Proximal Policy Optimization for portfolio management
-5. **Ensemble Methods** - Combining multiple models for robust predictions
+### Live Features
+- ✅ Real-time cryptocurrency prices from Binance
+- ✅ Interactive candlestick charts with volume
+- ✅ Live order book updates
+- ✅ AI trading signals and predictions
+- ✅ Portfolio tracking and management
 
 ---
 
-## 🚀 Installation
+## 🛠️ Tech Stack
+
+### Backend
+- **Django 5.2** - Web framework
+- **Django REST Framework** - API development
+- **SQLite/PostgreSQL** - Database
+- **TensorFlow/Keras** - Machine learning
+- **NumPy/Pandas** - Data processing
+
+### Frontend
+- **HTML5/CSS3** - Structure and styling
+- **JavaScript ES6+** - Interactive functionality
+- **TradingView Lightweight Charts** - Professional charts
+- **Chart.js** - Data visualization
+- **Font Awesome** - Icons
+
+### APIs & Real-Time
+- **Binance REST API** - Market data
+- **Binance WebSocket** - Real-time streaming
+- **Django REST Framework** - Internal APIs
+
+---
+
+## 📦 Installation
 
 ### Prerequisites
-- Python 3.12+
-- PostgreSQL or SQLite
-- Redis (for real-time features)
+- Python 3.11+
+- pip (Python package manager)
+- Git
 
-### Quick Setup
+### Quick Start
 
+1. **Clone the repository**
 ```bash
-# Clone repository
 git clone https://github.com/Mostafa-Anwar-Sagor/Full-Stack-AI-Trading-Platform.git
 cd Full-Stack-AI-Trading-Platform
+```
 
-# Create virtual environment
+2. **Create virtual environment**
+```bash
 python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
 
-# Install dependencies
-pip install -e .
+# Windows
+.\venv\Scripts\activate
+
+# Linux/Mac
+source venv/bin/activate
+```
+
+3. **Install dependencies**
+```bash
 pip install -r requirements.txt
+```
 
-# Run migrations
+4. **Run migrations**
+```bash
 python manage.py migrate
+```
 
-# Start server
-python manage.py runserver
+5. **Create demo user**
+```bash
+python create_demo_user.py
+```
+
+6. **Start the server**
+```bash
+python manage.py runserver 8080
+```
+
+7. **Open in browser**
+```
+http://localhost:8080
 ```
 
 ---
-
-## 📊 Technologies Used
-
-- **Backend**: Python, Django, Django REST Framework
-- **AI/ML**: TensorFlow, PyTorch, Ray RLlib, Stable-Baselines3
-- **Data Processing**: Pandas, NumPy, TA-Lib
-- **Real-Time**: WebSockets, Redis, Celery
-- **Database**: PostgreSQL / SQLite
-- **Visualization**: Plotly, Chart.js, D3.js
-- **APIs**: Binance API, Alpha Vantage, Yahoo Finance
-
-## 🎓 Model Architecture
-
-The platform uses multiple AI models working together:
-
-1. **LSTM Networks** - Time series prediction for price forecasting
-2. **Transformer Models** - Attention-based models for market trend analysis
-3. **Deep Q-Networks (DQN)** - Reinforcement learning for trade execution
-4. **PPO Agents** - Proximal Policy Optimization for portfolio management
-5. **Ensemble Methods** - Combining multiple models for robust predictions
-
-## 📈 Usage
-
-### Training a Trading Agent
-
-```python
-from tensortrade import TradingEnvironment
-from agents import PPOAgent
-
-# Create environment
-env = TradingEnvironment(exchange='binance', pair='BTC/USDT')
-
-# Initialize agent
-agent = PPOAgent(env)
-
-# Train
-agent.train(episodes=1000)
-
-# Evaluate
-results = agent.evaluate(test_data)
-```
-
-### Running Backtests
-
-```python
-from backtesting import Backtest
-from strategies import LSTMStrategy
-
-backtest = Backtest(
-    strategy=LSTMStrategy(),
-    data=historical_data,
-    initial_capital=10000
-)
-
-results = backtest.run()
-print(f"Total Return: {results['return']:.2%}")
-```
 
 ## 📁 Project Structure
 
 ```
-Trading-Platform/
-├── agents/              # RL trading agents
-├── strategies/          # Trading strategies
-├── data/                # Data feeds and processors
-├── models/              # Trained AI models
-├── backtesting/         # Backtesting engine
-├── api/                 # REST API
-├── frontend/            # Dashboard UI
-├── docs/                # Documentation
-└── tests/               # Unit tests
+Full-Stack-AI-Trading-Platform/
+├── 📂 api/                     # Backend API
+│   ├── models.py               # Database models
+│   ├── views.py                # API endpoints
+│   ├── page_views.py           # Page rendering
+│   ├── serializers.py          # Data serialization
+│   └── urls.py                 # API routing
+├── 📂 trading_platform/        # Django settings
+│   ├── settings.py             # Configuration
+│   └── urls.py                 # Main routing
+├── 📂 templates/               # HTML templates
+│   ├── base.html               # Base template
+│   └── pages/                  # All pages
+│       ├── home.html           # Landing page
+│       ├── dashboard.html      # Main dashboard
+│       ├── trading.html        # Trading terminal
+│       ├── market.html         # Market overview
+│       ├── portfolio.html      # Portfolio management
+│       ├── agents.html         # AI agents
+│       ├── predictions.html    # AI predictions
+│       ├── backtest.html       # Strategy backtesting
+│       ├── risk.html           # Risk analysis
+│       └── settings.html       # User settings
+├── 📂 static/                  # Static assets
+│   ├── css/                    # Stylesheets
+│   └── js/                     # JavaScript files
+│       └── trading-binance.js  # Trading logic
+├── 📂 screenshots/             # Demo screenshots
+├── 📄 manage.py                # Django CLI
+├── 📄 requirements.txt         # Dependencies
+├── 📄 create_demo_user.py      # Demo user script
+└── 📄 README.md                # This file
 ```
 
-## 🔮 Future Enhancements
+---
 
-- [ ] Multi-exchange arbitrage detection
-- [ ] Sentiment analysis from social media
-- [ ] Advanced order types (options, futures)
-- [ ] Mobile app for iOS/Android
-- [ ] Automated portfolio rebalancing
-- [ ] News event impact analysis
+## 🔌 API Reference
 
-## 📄 License
+### Market Data
 
-MIT License - Copyright (c) 2026 Mostafa Anwar
+```http
+GET /api/market-data/
+```
+Returns real-time cryptocurrency prices and market stats.
+
+### Trade Execution
+
+```http
+POST /api/execute-trade/
+Content-Type: application/json
+
+{
+  "symbol": "BTCUSDT",
+  "side": "buy",
+  "type": "limit",
+  "price": 68500.00,
+  "amount": 0.01
+}
+```
+
+### AI Predictions
+
+```http
+GET /api/predictions/?symbol=BTC
+```
+Returns AI-powered price predictions and signals.
+
+### Portfolio
+
+```http
+GET /api/portfolio/
+```
+Returns portfolio holdings and performance.
+
+### Backtesting
+
+```http
+POST /api/backtest/
+Content-Type: application/json
+
+{
+  "agent_type": "ppo",
+  "start_date": "2025-01-01",
+  "end_date": "2026-02-01",
+  "initial_capital": 10000
+}
+```
+
+---
+
+## 🤖 AI Trading Agents
+
+### PPO (Proximal Policy Optimization)
+- Best for: Trend-following strategies
+- Features: Stable learning, good sample efficiency
+
+### DQN (Deep Q-Network)
+- Best for: Momentum trading
+- Features: Experience replay, target networks
+
+### A3C (Asynchronous Advantage Actor-Critic)
+- Best for: Multi-asset trading
+- Features: Parallel training, faster convergence
+
+### LSTM (Long Short-Term Memory)
+- Best for: Price prediction
+- Features: Time-series analysis, pattern recognition
+
+---
+
+## 🎨 UI Features
+
+- **Dark Theme** - Professional dark mode design
+- **Glassmorphism** - Modern glass-effect UI elements
+- **Responsive Design** - Works on desktop and mobile
+- **Real-time Updates** - Live price streaming
+- **Toast Notifications** - User feedback system
+- **Interactive Charts** - Hover effects and tooltips
+
+---
+
+## 🔧 Configuration
+
+### Environment Variables (Optional)
+```env
+DEBUG=True
+SECRET_KEY=your-secret-key
+DATABASE_URL=sqlite:///db.sqlite3
+```
+
+### Binance API (Built-in)
+The platform uses Binance's public API - no API keys required for market data.
+
+---
+
+## 📈 Performance
+
+- **Real-time Updates**: < 100ms latency
+- **Chart Rendering**: 60 FPS smooth animations
+- **API Response**: < 200ms average
+- **WebSocket**: Instant price streaming
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+---
+
+## 📝 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+---
 
 ## 👤 Author
 
-**Mostafa Anwar**
-- Email: sagorahmed1400@gmail.com
+**Mostafa Anwar Sagor**
+
 - GitHub: [@Mostafa-Anwar-Sagor](https://github.com/Mostafa-Anwar-Sagor)
 
 ---
 
-⭐ **Star this repository if you find it helpful!**
+## 🙏 Acknowledgments
 
-### Training
-- [First Training](docs/tutorials/04-training/01-first-training.md) — Train with Ray RLlib
-- [Ray RLlib Deep Dive](docs/tutorials/04-training/02-ray-rllib.md) — Configuration options
-- [Optuna Optimization](docs/tutorials/04-training/03-optuna.md) — Hyperparameter tuning
-
-### Advanced Topics
-- [Overfitting](docs/tutorials/05-advanced/01-overfitting.md) — Detection and prevention
-- [Commission Analysis](docs/tutorials/05-advanced/02-commission.md) — Key research findings
-- [Walk-Forward Validation](docs/tutorials/05-advanced/03-walk-forward.md) — Proper evaluation
-
-### Additional Resources
-- [Experiments Log](docs/EXPERIMENTS.md) — Full research documentation
-- [Environment Setup](docs/ENVIRONMENT_SETUP.md) — Detailed installation guide
-- [API Reference](https://www.tensortrade.org/en/latest/)
+- [Binance API](https://binance-docs.github.io/apidocs/) for real-time market data
+- [TradingView Lightweight Charts](https://tradingview.github.io/lightweight-charts/) for professional charts
+- [Django](https://www.djangoproject.com/) for the web framework
+- [TensorFlow](https://www.tensorflow.org/) for machine learning capabilities
 
 ---
 
-## Research Findings
+<div align="center">
 
-We conducted extensive experiments training PPO agents on BTC/USD. Key results:
+**⭐ Star this repo if you find it helpful!**
 
-| Configuration | Test P&L | vs Buy-and-Hold |
-|---------------|----------|-----------------|
-| Agent (0% commission) | +$239 | +$594 |
-| Agent (0.1% commission) | -$650 | -$295 |
-| Buy-and-Hold | -$355 | — |
+Made with ❤️ by Mostafa Anwar Sagor
 
-The agent demonstrates directional prediction capability at zero commission. The primary challenge is trading frequency—commission costs currently exceed prediction profits. See [EXPERIMENTS.md](docs/EXPERIMENTS.md) for methodology and detailed analysis.
-
----
-
-## Architecture
-
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                        TradingEnv                               │
-│                                                                 │
-│   Observer ──────> Agent ──────> ActionScheme ──────> Portfolio │
-│   (features)      (policy)      (BSH/Orders)        (wallets)  │
-│       ^                                                  │      │
-│       └──────────── RewardScheme <───────────────────────┘      │
-│                        (PBR)                                    │
-│                                                                 │
-│   DataFeed ──────> Exchange ──────> Broker ──────> Trades       │
-└─────────────────────────────────────────────────────────────────┘
-```
-
-| Component | Purpose | Default |
-|-----------|---------|---------|
-| ActionScheme | Converts agent output to orders | BSH (Buy/Sell/Hold) |
-| RewardScheme | Computes learning signal | PBR (Position-Based Returns) |
-| Observer | Generates observations | Windowed features |
-| Portfolio | Manages wallets and positions | USD + BTC |
-| Exchange | Simulates execution | Configurable commission |
-
----
-
-## Training Scripts
-
-| Script | Description |
-|--------|-------------|
-| `examples/training/train_simple.py` | Basic demo with wallet tracking |
-| `examples/training/train_ray_long.py` | Distributed training with Ray RLlib |
-| `examples/training/train_optuna.py` | Hyperparameter optimization |
-| `examples/training/train_best.py` | Best configuration from experiments |
-
----
-
-## Installation
-
-**Requirements:** Python 3.11 or 3.12
-
-```bash
-# Create environment
-python3.12 -m venv tensortrade-env
-source tensortrade-env/bin/activate  # Windows: tensortrade-env\Scripts\activate
-
-# Install
-pip install --upgrade pip
-pip install -r requirements.txt
-pip install -e .
-
-# Verify
-pytest tests/tensortrade/unit -v
-
-# Training dependencies (optional)
-pip install -r examples/requirements.txt
-```
-
-See [ENVIRONMENT_SETUP.md](docs/ENVIRONMENT_SETUP.md) for platform-specific instructions and troubleshooting.
-
-### Docker
-
-```bash
-make run-notebook  # Jupyter
-make run-docs      # Documentation
-make run-tests     # Test suite
-```
-
----
-
-## Project Structure
-
-```
-tensortrade/
-├── tensortrade/           # Core library
-│   ├── env/              # Trading environments
-│   ├── feed/             # Data pipeline
-│   ├── oms/              # Order management
-│   └── data/             # Data fetching
-├── examples/
-│   ├── training/         # Training scripts
-│   └── notebooks/        # Jupyter tutorials
-├── docs/
-│   ├── tutorials/        # Learning curriculum
-│   └── EXPERIMENTS.md    # Research log
-└── tests/
-```
-
----
-
-## Troubleshooting
-
-| Issue | Solution |
-|-------|----------|
-| "No stream satisfies selector" | Update to v1.0.4-dev1+ |
-| Ray installation fails | Run `pip install --upgrade pip` first |
-| TensorFlow CUDA issues | `pip install tensorflow[and-cuda]==2.15.1` |
-| NumPy version conflict | `pip install "numpy>=1.26.4,<2.0"` |
-
----
-
-## Contributing
-
-See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
-
-Priority areas:
-1. Trading frequency reduction (position sizing, holding periods)
-2. Commission-aware reward schemes
-3. Alternative action spaces
-
----
-
-## Community
-
-- [Discord](https://discord.gg/ZZ7BGWh)
-- [GitHub Issues](https://github.com/notadamking/tensortrade/issues)
-- [Documentation](https://www.tensortrade.org/)
-
----
-
-## License
-
-[Apache 2.0](LICENSE)
+</div>

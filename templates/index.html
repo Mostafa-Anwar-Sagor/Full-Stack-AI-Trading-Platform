@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Advanced AI-Powered Algorithmic Trading Platform">
+    <title>AI Trading Platform | Algorithmic Trading with ML</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/static/css/dashboard.css">
+</head>
+
+<body>
+    <div class="bg-gradient"></div>
+
+    <!-- Mobile Menu Toggle -->
+    <button class="mobile-menu-toggle" id="mobile-menu-toggle">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="logo">
+            <div class="logo-icon">📈</div>
+            <span class="logo-text">AI Trading</span>
+        </div>
+
+        <nav class="nav-section">
+            <div class="nav-section-title">Main</div>
+            <a class="nav-item active" data-page="dashboard"><i class="fas fa-chart-line"></i><span>Dashboard</span></a>
+            <a class="nav-item" data-page="portfolio"><i class="fas fa-wallet"></i><span>Portfolio</span></a>
+            <a class="nav-item" data-page="trading"><i class="fas fa-exchange-alt"></i><span>Trading</span></a>
+            <a class="nav-item" data-page="market"><i class="fas fa-globe"></i><span>Market</span></a>
+        </nav>
+
+        <nav class="nav-section">
+            <div class="nav-section-title">AI Features</div>
+            <a class="nav-item" data-page="agents"><i class="fas fa-robot"></i><span>AI Agents</span></a>
+            <a class="nav-item" data-page="predictions"><i class="fas fa-brain"></i><span>Predictions</span></a>
+            <a class="nav-item" data-page="backtest"><i class="fas fa-history"></i><span>Backtest</span></a>
+            <a class="nav-item" data-page="risk"><i class="fas fa-shield-alt"></i><span>Risk Analysis</span></a>
+            <a class="nav-item" data-page="optimize"><i class="fas fa-chart-pie"></i><span>Optimizer</span></a>
+        </nav>
+
+        <nav class="nav-section" style="margin-top:auto;">
+            <a class="nav-item" href="/api/" target="_blank"><i class="fas fa-code"></i><span>API</span></a>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content" id="main-content">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-left">
+                <h1 id="page-title">AI Trading Dashboard</h1>
+                <p id="page-subtitle">Real-time AI-powered market analysis</p>
+            </div>
+            <div class="header-right">
+                <div class="paper-trading-badge"><i class="fas fa-flask"></i><span>Paper Trading</span></div>
+                <button class="btn btn-secondary" onclick="openModal('trade-modal')"><i
+                        class="fas fa-plus"></i><span>Trade</span></button>
+                <button class="btn btn-primary" onclick="openModal('agent-modal')"><i class="fas fa-robot"></i><span>New
+                        Agent</span></button>
+            </div>
+        </header>
+
+        <!-- Dashboard Page -->
+        <div id="page-dashboard" class="page active">
+            <!-- Stats Grid -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon purple"><i class="fas fa-wallet"></i></div>
+                    <div class="stat-label">Portfolio Value</div>
+                    <div class="stat-value" id="portfolio-value">$12,547.83</div>
+                    <div class="stat-change positive"><i class="fas fa-arrow-up"></i>+25.48%</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon green"><i class="fas fa-chart-line"></i></div>
+                    <div class="stat-label">Today's P&L</div>
+                    <div class="stat-value" id="daily-pnl">+$347.21</div>
+                    <div class="stat-change positive"><i class="fas fa-arrow-up"></i>+2.84%</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon blue"><i class="fas fa-robot"></i></div>
+                    <div class="stat-label">Active Agents</div>
+                    <div class="stat-value" id="active-agents">3</div>
+                    <div class="stat-change positive"><i class="fas fa-check-circle"></i>Running</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon orange"><i class="fas fa-percentage"></i></div>
+                    <div class="stat-label">Win Rate</div>
+                    <div class="stat-value" id="win-rate">67.5%</div>
+                    <div class="stat-change positive"><i class="fas fa-arrow-up"></i>+4.2%</div>
+                </div>
+            </div>
+
+            <!-- AI Signals -->
+            <div class="ai-signals-bar">
+                <div class="signal-title"><i class="fas fa-brain"></i>AI Trading Signals</div>
+                <div class="signals-container" id="ai-signals"></div>
+            </div>
+
+            <!-- Content Grid -->
+            <div class="content-grid">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Portfolio Performance</h2>
+                        <div class="time-filter"><button class="time-filter-btn" data-range="7d">7D</button><button
+                                class="time-filter-btn active" data-range="30d">30D</button><button
+                                class="time-filter-btn" data-range="90d">90D</button></div>
+                    </div>
+                    <div class="chart-container"><canvas id="portfolioChart"></canvas></div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Top Assets</h2>
+                    </div>
+                    <div class="asset-list" id="asset-list"></div>
+                </div>
+            </div>
+
+            <!-- AI Agents -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title"><i class="fas fa-robot"></i> AI Trading Agents</h2><button
+                        class="btn btn-primary" onclick="openModal('agent-modal')"><i
+                            class="fas fa-plus"></i>Create</button>
+                </div>
+                <div class="agents-grid" id="agents-grid"></div>
+            </div>
+
+            <!-- Backtest Section -->
+            <div class="card backtest-card">
+                <div class="card-header">
+                    <h2 class="card-title"><i class="fas fa-history"></i> Quick Backtest</h2>
+                </div>
+                <div class="backtest-form">
+                    <div class="form-group"><label>Agent</label><select id="backtest-agent">
+                            <option value="ppo">PPO</option>
+                            <option value="dqn">DQN</option>
+                            <option value="lstm">LSTM</option>
+                        </select></div>
+                    <div class="form-group"><label>Start</label><input type="date" id="backtest-start"
+                            value="2025-01-01"></div>
+                    <div class="form-group"><label>End</label><input type="date" id="backtest-end" value="2026-02-01">
+                    </div>
+                    <div class="form-group"><label>Capital</label><input type="number" id="backtest-capital"
+                            value="10000"></div><button class="btn btn-primary" onclick="runBacktest()"><i
+                            class="fas fa-play"></i>Run</button>
+                </div>
+            </div>
+
+            <!-- Recent Trades -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Recent Trades</h2>
+                </div>
+                <div class="table-responsive">
+                    <table class="trades-table">
+                        <thead>
+                            <tr>
+                                <th>Time</th>
+                                <th>Type</th>
+                                <th>Asset</th>
+                                <th>Price</th>
+                                <th>Value</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="trades-table"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Predictions Page -->
+        <div id="page-predictions" class="page">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title"><i class="fas fa-brain"></i> LSTM Price Predictions</h2><select
+                        id="prediction-asset" class="asset-select" onchange="loadPredictions()">
+                        <option value="BTC">Bitcoin</option>
+                        <option value="ETH">Ethereum</option>
+                        <option value="SOL">Solana</option>
+                    </select>
+                </div>
+                <div class="prediction-content">
+                    <div class="prediction-chart"><canvas id="predictionChart"></canvas></div>
+                    <div class="prediction-info" id="prediction-info"></div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Technical Indicators</h2>
+                </div>
+                <div class="indicators-grid" id="indicators-grid"></div>
+            </div>
+        </div>
+
+        <!-- Risk Page -->
+        <div id="page-risk" class="page">
+            <div class="risk-grid">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title"><i class="fas fa-shield-alt"></i> Risk Metrics</h2>
+                    </div>
+                    <div id="risk-metrics"></div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Portfolio Allocation</h2>
+                    </div>
+                    <div class="chart-container"><canvas id="allocationChart"></canvas></div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Risk Alerts</h2>
+                </div>
+                <div id="risk-alerts"></div>
+            </div>
+        </div>
+
+        <!-- Optimize Page -->
+        <div id="page-optimize" class="page">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title"><i class="fas fa-chart-pie"></i> Portfolio Optimization</h2><select
+                        id="risk-tolerance" onchange="loadOptimization()">
+                        <option value="conservative">Conservative</option>
+                        <option value="medium" selected>Moderate</option>
+                        <option value="aggressive">Aggressive</option>
+                    </select>
+                </div>
+                <div class="optimization-content" id="optimization-content"></div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Trade Modal -->
+    <div class="modal-overlay" id="trade-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Execute Trade</h3><button class="modal-close" onclick="closeModal('trade-modal')"><i
+                        class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group"><label>Type</label><select id="trade-type">
+                        <option value="buy">Buy</option>
+                        <option value="sell">Sell</option>
+                    </select></div>
+                <div class="form-group"><label>Asset</label><select id="trade-asset">
+                        <option value="BTC">Bitcoin</option>
+                        <option value="ETH">Ethereum</option>
+                        <option value="SOL">Solana</option>
+                    </select></div>
+                <div class="form-group"><label>Quantity</label><input type="number" id="trade-quantity" step="0.001"
+                        placeholder="0.00"></div>
+                <div class="ai-recommendation" id="trade-recommendation"></div>
+                <div class="modal-actions"><button class="btn btn-secondary"
+                        onclick="closeModal('trade-modal')">Cancel</button><button class="btn btn-primary"
+                        onclick="executeTrade()">Execute</button></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Agent Modal -->
+    <div class="modal-overlay" id="agent-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Create AI Agent</h3><button class="modal-close" onclick="closeModal('agent-modal')"><i
+                        class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group"><label>Agent Type</label><select id="agent-type">
+                        <option value="ppo">PPO - Policy Optimization</option>
+                        <option value="dqn">DQN - Deep Q-Network</option>
+                        <option value="lstm">LSTM - Price Prediction</option>
+                        <option value="a3c">A3C - Actor-Critic</option>
+                    </select></div>
+                <div class="form-group"><label>Trading Pair</label><select id="agent-pair">
+                        <option value="BTC/USD">BTC/USD</option>
+                        <option value="ETH/USD">ETH/USD</option>
+                        <option value="SOL/USD">SOL/USD</option>
+                    </select></div>
+                <div class="form-group"><label>Training Episodes</label><input type="number" id="agent-episodes"
+                        value="1000"></div>
+                <div class="modal-actions"><button class="btn btn-secondary"
+                        onclick="closeModal('agent-modal')">Cancel</button><button class="btn btn-primary"
+                        onclick="trainAgent()"><i class="fas fa-play"></i>Train Agent</button></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <script src="/static/js/dashboard.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,868 @@
+{% extends 'base.html' %}
+{% block title %}Market Overview - AI Trading Platform{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="/static/css/dashboard.css">
+<script src="https://unpkg.com/lightweight-charts@4.1.0/dist/lightweight-charts.standalone.production.js"></script>
+<style>
+    .market-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 16px;
+        margin-bottom: 24px;
+    }
+
+    .market-tabs {
+        display: flex;
+        gap: 4px;
+        background: var(--bg-tertiary);
+        padding: 4px;
+        border-radius: 12px;
+    }
+
+    .market-tab {
+        padding: 10px 20px;
+        background: transparent;
+        border: none;
+        color: var(--text-secondary);
+        font-size: 14px;
+        font-weight: 600;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .market-tab.active {
+        background: var(--accent-gradient);
+        color: white;
+    }
+
+    .search-box {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background: var(--bg-tertiary);
+        border: 1px solid var(--border-color);
+        border-radius: 10px;
+        padding: 10px 16px;
+    }
+
+    .search-box input {
+        background: transparent;
+        border: none;
+        color: white;
+        font-size: 14px;
+        width: 200px;
+    }
+
+    .search-box input::placeholder {
+        color: var(--text-muted);
+    }
+
+    .search-box input:focus {
+        outline: none;
+    }
+
+    .search-box i {
+        color: var(--text-muted);
+    }
+
+    .market-stats-row {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 16px;
+        margin-bottom: 24px;
+    }
+
+    .market-stat-card {
+        background: var(--bg-card);
+        border-radius: 14px;
+        padding: 20px;
+        border: 1px solid var(--border-color);
+    }
+
+    .msc-label {
+        font-size: 12px;
+        color: var(--text-muted);
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .msc-label i {
+        color: var(--accent-primary);
+    }
+
+    .msc-value {
+        font-size: 24px;
+        font-weight: 700;
+        font-family: 'SF Mono', Monaco, monospace;
+    }
+
+    .msc-change {
+        font-size: 13px;
+        margin-top: 6px;
+    }
+
+    .msc-change.positive {
+        color: var(--success);
+    }
+
+    .msc-change.negative {
+        color: var(--danger);
+    }
+
+    .featured-section {
+        margin-bottom: 24px;
+    }
+
+    .section-title {
+        font-size: 18px;
+        font-weight: 700;
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .section-title i {
+        color: var(--accent-primary);
+    }
+
+    .featured-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+    }
+
+    .featured-card {
+        background: var(--bg-card);
+        border-radius: 16px;
+        padding: 20px;
+        border: 1px solid var(--border-color);
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+
+    .featured-card:hover {
+        transform: translateY(-4px);
+        border-color: rgba(99, 102, 241, 0.3);
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    }
+
+    .fc-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 12px;
+    }
+
+    .fc-info {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .fc-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        font-weight: 700;
+    }
+
+    .fc-name {
+        font-weight: 700;
+        font-size: 15px;
+    }
+
+    .fc-symbol {
+        font-size: 12px;
+        color: var(--text-muted);
+    }
+
+    .fc-signal {
+        padding: 4px 10px;
+        border-radius: 6px;
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+    }
+
+    .fc-signal.buy {
+        background: rgba(16, 185, 129, 0.15);
+        color: var(--success);
+    }
+
+    .fc-signal.sell {
+        background: rgba(239, 68, 68, 0.15);
+        color: var(--danger);
+    }
+
+    .fc-signal.hold {
+        background: rgba(107, 114, 128, 0.15);
+        color: var(--text-secondary);
+    }
+
+    .fc-chart {
+        height: 80px;
+        margin: 8px 0;
+    }
+
+    .fc-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+    }
+
+    .fc-price {
+        font-size: 20px;
+        font-weight: 700;
+        font-family: 'SF Mono', Monaco, monospace;
+    }
+
+    .fc-change {
+        font-size: 14px;
+        font-weight: 600;
+        padding: 4px 8px;
+        border-radius: 6px;
+    }
+
+    .fc-change.positive {
+        background: rgba(16, 185, 129, 0.15);
+        color: var(--success);
+    }
+
+    .fc-change.negative {
+        background: rgba(239, 68, 68, 0.15);
+        color: var(--danger);
+    }
+
+    .fc-volume {
+        font-size: 12px;
+        color: var(--text-muted);
+        text-align: right;
+    }
+
+    .market-table-card {
+        background: var(--bg-card);
+        border-radius: 16px;
+        border: 1px solid var(--border-color);
+        overflow: hidden;
+    }
+
+    .table-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 16px 20px;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .table-filters {
+        display: flex;
+        gap: 8px;
+    }
+
+    .table-filter-btn {
+        padding: 6px 14px;
+        background: var(--bg-tertiary);
+        border: 1px solid var(--border-color);
+        border-radius: 6px;
+        color: var(--text-secondary);
+        font-size: 12px;
+        cursor: pointer;
+    }
+
+    .table-filter-btn.active {
+        border-color: var(--accent-primary);
+        color: var(--accent-primary);
+    }
+
+    .market-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .market-table th {
+        text-align: left;
+        padding: 14px 20px;
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        border-bottom: 1px solid var(--border-color);
+        cursor: pointer;
+        white-space: nowrap;
+    }
+
+    .market-table th:hover {
+        color: white;
+    }
+
+    .market-table th i {
+        margin-left: 4px;
+        font-size: 10px;
+    }
+
+    .market-table td {
+        padding: 16px 20px;
+        font-size: 14px;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .market-table tr:hover td {
+        background: rgba(99, 102, 241, 0.04);
+    }
+
+    .market-table tr {
+        cursor: pointer;
+        transition: background 0.2s;
+    }
+
+    .coin-cell {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .coin-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 12px;
+        color: white;
+    }
+
+    .coin-info {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .coin-name {
+        font-weight: 600;
+    }
+
+    .coin-symbol {
+        font-size: 12px;
+        color: var(--text-muted);
+    }
+
+    .price-cell {
+        font-family: 'SF Mono', Monaco, monospace;
+        font-weight: 600;
+    }
+
+    .change-cell {
+        font-weight: 600;
+    }
+
+    .change-cell.positive {
+        color: var(--success);
+    }
+
+    .change-cell.negative {
+        color: var(--danger);
+    }
+
+    .mini-chart {
+        width: 100px;
+        height: 40px;
+    }
+
+    .volume-cell {
+        color: var(--text-secondary);
+        font-family: 'SF Mono', Monaco, monospace;
+    }
+
+    .action-cell {
+        display: flex;
+        gap: 8px;
+    }
+
+    .action-btn {
+        padding: 6px 14px;
+        border-radius: 6px;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        border: none;
+    }
+
+    .action-btn.trade {
+        background: var(--accent-gradient);
+        color: white;
+    }
+
+    .action-btn.trade:hover {
+        transform: scale(1.05);
+    }
+
+    .live-indicator {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 12px;
+        color: var(--success);
+    }
+
+    .live-dot {
+        width: 8px;
+        height: 8px;
+        background: var(--success);
+        border-radius: 50%;
+        animation: livePulse 2s infinite;
+    }
+
+    @keyframes livePulse {
+
+        0%,
+        100% {
+            opacity: 1;
+        }
+
+        50% {
+            opacity: 0.5;
+        }
+    }
+
+    .loading-spinner {
+        width: 30px;
+        height: 30px;
+        border: 3px solid var(--bg-tertiary);
+        border-top-color: var(--accent-primary);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin: 40px auto;
+    }
+
+    @keyframes spin {
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    @media (max-width: 1200px) {
+        .featured-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .market-stats-row {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media (max-width: 768px) {
+        .featured-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .market-stats-row {
+            grid-template-columns: 1fr;
+        }
+
+        .market-table {
+            display: block;
+            overflow-x: auto;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="bg-gradient"></div>
+<button class="mobile-menu-toggle" id="mobile-menu-toggle"><i class="fas fa-bars"></i></button>
+<aside class="sidebar" id="sidebar">
+    <div class="logo">
+        <div class="logo-icon">📈</div><span class="logo-text">AI Trading</span>
+    </div>
+    <nav class="nav-section">
+        <div class="nav-section-title">Main</div>
+        <a href="/" class="nav-item"><i class="fas fa-home"></i><span>Home</span></a>
+        <a href="/dashboard/" class="nav-item"><i class="fas fa-chart-line"></i><span>Dashboard</span></a>
+        <a href="/portfolio/" class="nav-item"><i class="fas fa-wallet"></i><span>Portfolio</span></a>
+        <a href="/trading/" class="nav-item"><i class="fas fa-exchange-alt"></i><span>Trading</span></a>
+        <a href="/market/" class="nav-item active"><i class="fas fa-globe"></i><span>Market</span></a>
+    </nav>
+    <nav class="nav-section">
+        <div class="nav-section-title">AI Features</div>
+        <a href="/agents/" class="nav-item"><i class="fas fa-robot"></i><span>AI Agents</span></a>
+        <a href="/predictions/" class="nav-item"><i class="fas fa-brain"></i><span>Predictions</span></a>
+        <a href="/backtest/" class="nav-item"><i class="fas fa-history"></i><span>Backtest</span></a>
+        <a href="/risk/" class="nav-item"><i class="fas fa-shield-alt"></i><span>Risk</span></a>
+    </nav>
+    <nav class="nav-section" style="margin-top:auto">
+        <a href="/settings/" class="nav-item"><i class="fas fa-cog"></i><span>Settings</span></a>
+        <a href="/logout/" class="nav-item"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a>
+    </nav>
+</aside>
+
+<main class="main-content">
+    <div class="market-header">
+        <div style="display:flex;align-items:center;gap:16px">
+            <h1 style="font-size:24px;font-weight:700">Market Overview</h1>
+            <span class="live-indicator"><span class="live-dot"></span>Live from Binance</span>
+        </div>
+        <div style="display:flex;gap:12px;align-items:center">
+            <div class="market-tabs">
+                <button class="market-tab active">All</button>
+                <button class="market-tab">Favorites</button>
+                <button class="market-tab">Gainers</button>
+                <button class="market-tab">Losers</button>
+            </div>
+            <div class="search-box"><i class="fas fa-search"></i><input type="text" placeholder="Search coins..."
+                    id="coin-search"></div>
+        </div>
+    </div>
+
+    <div class="market-stats-row">
+        <div class="market-stat-card">
+            <div class="msc-label"><i class="fas fa-chart-line"></i>Total Market Cap</div>
+            <div class="msc-value" id="total-mcap">Loading...</div>
+            <div class="msc-change positive" id="mcap-change">--</div>
+        </div>
+        <div class="market-stat-card">
+            <div class="msc-label"><i class="fas fa-exchange-alt"></i>24h Volume</div>
+            <div class="msc-value" id="total-volume">Loading...</div>
+            <div class="msc-change positive" id="vol-change">--</div>
+        </div>
+        <div class="market-stat-card">
+            <div class="msc-label"><i class="fab fa-bitcoin"></i>BTC Dominance</div>
+            <div class="msc-value" id="btc-dom">--</div>
+            <div class="msc-change" id="btc-dom-change">--</div>
+        </div>
+        <div class="market-stat-card">
+            <div class="msc-label"><i class="fas fa-fire"></i>Trending</div>
+            <div class="msc-value" id="trending-coin">--</div>
+            <div class="msc-change positive">🔥 Hot</div>
+        </div>
+    </div>
+
+    <div class="featured-section">
+        <div class="section-title"><i class="fas fa-star"></i>Featured Markets</div>
+        <div class="featured-grid" id="featured-grid">
+            <div class="loading-spinner"></div>
+        </div>
+    </div>
+
+    <div class="market-table-card">
+        <div class="table-header">
+            <div class="section-title" style="margin-bottom:0"><i class="fas fa-coins"></i>All Cryptocurrencies</div>
+            <div class="table-filters">
+                <button class="table-filter-btn active">Spot</button>
+                <button class="table-filter-btn">Futures</button>
+                <button class="table-filter-btn">New Listings</button>
+            </div>
+        </div>
+        <table class="market-table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Coin <i class="fas fa-sort"></i></th>
+                    <th>Price <i class="fas fa-sort"></i></th>
+                    <th>24h Change <i class="fas fa-sort"></i></th>
+                    <th>7d Chart</th>
+                    <th>24h Volume <i class="fas fa-sort"></i></th>
+                    <th>Market Cap <i class="fas fa-sort"></i></th>
+                    <th>AI Signal</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="market-table-body">
+                <tr>
+                    <td colspan="9" style="text-align:center;padding:40px">
+                        <div class="loading-spinner"></div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+
+<script>
+    const BINANCE_API = 'https://api.binance.com/api/v3';
+    const COIN_COLORS = {
+        BTC: '#f7931a', ETH: '#627eea', BNB: '#f3ba2f', SOL: '#9945ff', XRP: '#23292f',
+        DOGE: '#c2a633', ADA: '#0033ad', AVAX: '#e84142', DOT: '#e6007a', LINK: '#2a5ada',
+        MATIC: '#8247e5', UNI: '#ff007a', ATOM: '#2e3148', LTC: '#bfbbbb', SHIB: '#fda32b',
+        TRX: '#eb0029', ETC: '#328332', XLM: '#14b6e7', NEAR: '#000000', FTM: '#1969ff'
+    };
+
+    const COIN_NAMES = {
+        BTCUSDT: 'Bitcoin', ETHUSDT: 'Ethereum', BNBUSDT: 'BNB', SOLUSDT: 'Solana',
+        XRPUSDT: 'XRP', DOGEUSDT: 'Dogecoin', ADAUSDT: 'Cardano', AVAXUSDT: 'Avalanche',
+        DOTUSDT: 'Polkadot', LINKUSDT: 'Chainlink', MATICUSDT: 'Polygon', UNIUSDT: 'Uniswap',
+        ATOMUSDT: 'Cosmos', LTCUSDT: 'Litecoin', SHIBUSDT: 'Shiba Inu', TRXUSDT: 'TRON',
+        ETCUSDT: 'Ethereum Classic', XLMUSDT: 'Stellar', NEARUSDT: 'NEAR Protocol', FTMUSDT: 'Fantom'
+    };
+
+    let marketData = [];
+    let miniCharts = {};
+
+    document.addEventListener('DOMContentLoaded', async function () {
+        await loadMarketData();
+        renderFeaturedCards();
+        renderMarketTable();
+        startPriceUpdates();
+        initEventListeners();
+    });
+
+    async function loadMarketData() {
+        try {
+            const response = await fetch(`${BINANCE_API}/ticker/24hr`);
+            const allTickers = await response.json();
+
+            // Filter for major USDT pairs
+            const symbols = Object.keys(COIN_NAMES);
+            marketData = allTickers
+                .filter(t => symbols.includes(t.symbol))
+                .map((ticker, index) => {
+                    const symbol = ticker.symbol.replace('USDT', '');
+                    return {
+                        rank: index + 1,
+                        symbol: symbol,
+                        fullSymbol: ticker.symbol,
+                        name: COIN_NAMES[ticker.symbol] || symbol,
+                        price: parseFloat(ticker.lastPrice),
+                        change24h: parseFloat(ticker.priceChangePercent),
+                        volume: parseFloat(ticker.quoteVolume),
+                        high: parseFloat(ticker.highPrice),
+                        low: parseFloat(ticker.lowPrice),
+                        color: COIN_COLORS[symbol] || '#6366f1',
+                        signal: getAISignal(parseFloat(ticker.priceChangePercent))
+                    };
+                })
+                .sort((a, b) => b.volume - a.volume)
+                .slice(0, 20)
+                .map((coin, i) => ({ ...coin, rank: i + 1 }));
+
+            // Update global stats
+            const btcData = marketData.find(c => c.symbol === 'BTC');
+            const totalVolume = marketData.reduce((sum, c) => sum + c.volume, 0);
+
+            document.getElementById('total-volume').textContent = `$${formatLargeNum(totalVolume)}`;
+            document.getElementById('total-mcap').textContent = `$${formatLargeNum(totalVolume * 20)}`;
+            document.getElementById('btc-dom').textContent = btcData ? `${((btcData.volume / totalVolume) * 100 * 2).toFixed(1)}%` : '--';
+
+            const topGainer = [...marketData].sort((a, b) => b.change24h - a.change24h)[0];
+            document.getElementById('trending-coin').textContent = topGainer ? topGainer.symbol : '--';
+
+        } catch (error) {
+            console.error('Error loading market data:', error);
+        }
+    }
+
+    function getAISignal(change) {
+        if (change > 5) return 'strong-buy';
+        if (change > 2) return 'buy';
+        if (change < -5) return 'strong-sell';
+        if (change < -2) return 'sell';
+        return 'hold';
+    }
+
+    function renderFeaturedCards() {
+        const container = document.getElementById('featured-grid');
+        const featured = marketData.slice(0, 3);
+
+        container.innerHTML = featured.map(coin => `
+        <div class="featured-card" onclick="window.location.href='/trading/?pair=${coin.fullSymbol}'">
+            <div class="fc-header">
+                <div class="fc-info">
+                    <div class="fc-icon" style="background:${coin.color}">${coin.symbol.slice(0, 2)}</div>
+                    <div><div class="fc-name">${coin.name}</div><div class="fc-symbol">${coin.symbol}/USDT</div></div>
+                </div>
+                <span class="fc-signal ${coin.signal.includes('buy') ? 'buy' : coin.signal.includes('sell') ? 'sell' : 'hold'}">${coin.signal.replace('-', ' ')}</span>
+            </div>
+            <div class="fc-chart" id="chart-${coin.symbol}"></div>
+            <div class="fc-footer">
+                <div>
+                    <div class="fc-price" id="price-${coin.symbol}">$${formatPrice(coin.price)}</div>
+                    <span class="fc-change ${coin.change24h >= 0 ? 'positive' : 'negative'}" id="change-${coin.symbol}">${coin.change24h >= 0 ? '+' : ''}${coin.change24h.toFixed(2)}%</span>
+                </div>
+                <div class="fc-volume">Vol: $${formatLargeNum(coin.volume)}</div>
+            </div>
+        </div>
+    `).join('');
+
+        // Create mini charts
+        featured.forEach(async coin => {
+            const container = document.getElementById(`chart-${coin.symbol}`);
+            if (container) {
+                try {
+                    const response = await fetch(`${BINANCE_API}/klines?symbol=${coin.fullSymbol}&interval=1h&limit=24`);
+                    const klines = await response.json();
+
+                    const chart = LightweightCharts.createChart(container, {
+                        width: container.clientWidth,
+                        height: 80,
+                        layout: { background: { type: 'solid', color: 'transparent' }, textColor: 'transparent' },
+                        grid: { vertLines: { visible: false }, horzLines: { visible: false } },
+                        rightPriceScale: { visible: false },
+                        timeScale: { visible: false },
+                        handleScroll: false,
+                        handleScale: false,
+                    });
+
+                    const series = chart.addAreaSeries({
+                        lineColor: coin.change24h >= 0 ? '#10b981' : '#ef4444',
+                        topColor: coin.change24h >= 0 ? 'rgba(16,185,129,0.3)' : 'rgba(239,68,68,0.3)',
+                        bottomColor: 'transparent',
+                        lineWidth: 2,
+                    });
+
+                    const data = klines.map(k => ({
+                        time: Math.floor(k[0] / 1000),
+                        value: parseFloat(k[4])
+                    }));
+                    series.setData(data);
+                    miniCharts[coin.symbol] = { chart, series };
+                } catch (e) {
+                    console.error('Error creating chart:', e);
+                }
+            }
+        });
+    }
+
+    function renderMarketTable() {
+        const tbody = document.getElementById('market-table-body');
+
+        tbody.innerHTML = marketData.map(coin => `
+        <tr onclick="window.location.href='/trading/?pair=${coin.fullSymbol}'">
+            <td style="color:var(--text-muted)">${coin.rank}</td>
+            <td>
+                <div class="coin-cell">
+                    <div class="coin-icon" style="background:${coin.color}">${coin.symbol.slice(0, 2)}</div>
+                    <div class="coin-info"><span class="coin-name">${coin.name}</span><span class="coin-symbol">${coin.symbol}</span></div>
+                </div>
+            </td>
+            <td class="price-cell" id="table-price-${coin.symbol}">$${formatPrice(coin.price)}</td>
+            <td class="change-cell ${coin.change24h >= 0 ? 'positive' : 'negative'}" id="table-change-${coin.symbol}">${coin.change24h >= 0 ? '+' : ''}${coin.change24h.toFixed(2)}%</td>
+            <td><div class="mini-chart" id="table-chart-${coin.symbol}"></div></td>
+            <td class="volume-cell">$${formatLargeNum(coin.volume)}</td>
+            <td class="volume-cell">$${formatLargeNum(coin.volume * 15)}</td>
+            <td><span class="fc-signal ${coin.signal.includes('buy') ? 'buy' : coin.signal.includes('sell') ? 'sell' : 'hold'}">${coin.signal.replace('-', ' ')}</span></td>
+            <td><div class="action-cell"><button class="action-btn trade" onclick="event.stopPropagation();window.location.href='/trading/?pair=${coin.fullSymbol}'">Trade</button></div></td>
+        </tr>
+    `).join('');
+
+        // Create table mini charts
+        marketData.forEach(async coin => {
+            const container = document.getElementById(`table-chart-${coin.symbol}`);
+            if (container) {
+                try {
+                    const response = await fetch(`${BINANCE_API}/klines?symbol=${coin.fullSymbol}&interval=4h&limit=42`);
+                    const klines = await response.json();
+
+                    const chart = LightweightCharts.createChart(container, {
+                        width: 100,
+                        height: 40,
+                        layout: { background: { type: 'solid', color: 'transparent' }, textColor: 'transparent' },
+                        grid: { vertLines: { visible: false }, horzLines: { visible: false } },
+                        rightPriceScale: { visible: false },
+                        timeScale: { visible: false },
+                        handleScroll: false,
+                        handleScale: false,
+                    });
+
+                    const series = chart.addLineSeries({
+                        color: coin.change24h >= 0 ? '#10b981' : '#ef4444',
+                        lineWidth: 1.5,
+                    });
+
+                    const data = klines.map(k => ({
+                        time: Math.floor(k[0] / 1000),
+                        value: parseFloat(k[4])
+                    }));
+                    series.setData(data);
+                } catch (e) {
+                    console.error('Error creating table chart:', e);
+                }
+            }
+        });
+    }
+
+    async function startPriceUpdates() {
+        setInterval(async () => {
+            try {
+                const response = await fetch(`${BINANCE_API}/ticker/24hr`);
+                const allTickers = await response.json();
+
+                marketData.forEach(coin => {
+                    const ticker = allTickers.find(t => t.symbol === coin.fullSymbol);
+                    if (ticker) {
+                        coin.price = parseFloat(ticker.lastPrice);
+                        coin.change24h = parseFloat(ticker.priceChangePercent);
+
+                        // Update featured cards
+                        const priceEl = document.getElementById(`price-${coin.symbol}`);
+                        const changeEl = document.getElementById(`change-${coin.symbol}`);
+                        if (priceEl) priceEl.textContent = `$${formatPrice(coin.price)}`;
+                        if (changeEl) {
+                            changeEl.textContent = `${coin.change24h >= 0 ? '+' : ''}${coin.change24h.toFixed(2)}%`;
+                            changeEl.className = `fc-change ${coin.change24h >= 0 ? 'positive' : 'negative'}`;
+                        }
+
+                        // Update table
+                        const tablePriceEl = document.getElementById(`table-price-${coin.symbol}`);
+                        const tableChangeEl = document.getElementById(`table-change-${coin.symbol}`);
+                        if (tablePriceEl) tablePriceEl.textContent = `$${formatPrice(coin.price)}`;
+                        if (tableChangeEl) {
+                            tableChangeEl.textContent = `${coin.change24h >= 0 ? '+' : ''}${coin.change24h.toFixed(2)}%`;
+                            tableChangeEl.className = `change-cell ${coin.change24h >= 0 ? 'positive' : 'negative'}`;
+                        }
+                    }
+                });
+            } catch (error) {
+                console.error('Error updating prices:', error);
+            }
+        }, 5000);
+    }
+
+    function initEventListeners() {
+        document.getElementById('mobile-menu-toggle')?.addEventListener('click', () => {
+            document.getElementById('sidebar').classList.toggle('active');
+        });
+
+        document.querySelectorAll('.market-tab').forEach(tab => {
+            tab.addEventListener('click', function () {
+                document.querySelectorAll('.market-tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        document.getElementById('coin-search')?.addEventListener('input', function () {
+            const query = this.value.toLowerCase();
+            document.querySelectorAll('#market-table-body tr').forEach(row => {
+                const name = row.querySelector('.coin-name')?.textContent.toLowerCase() || '';
+                const symbol = row.querySelector('.coin-symbol')?.textContent.toLowerCase() || '';
+                row.style.display = name.includes(query) || symbol.includes(query) ? '' : 'none';
+            });
+        });
+    }
+
+    function formatPrice(price) {
+        if (price >= 1000) return price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        if (price >= 1) return price.toFixed(2);
+        if (price >= 0.01) return price.toFixed(4);
+        return price.toFixed(6);
+    }
+
+    function formatLargeNum(num) {
+        if (num >= 1e12) return (num / 1e12).toFixed(2) + 'T';
+        if (num >= 1e9) return (num / 1e9).toFixed(2) + 'B';
+        if (num >= 1e6) return (num / 1e6).toFixed(2) + 'M';
+        if (num >= 1e3) return (num / 1e3).toFixed(2) + 'K';
+        return num.toFixed(2);
+    }
+</script>
+{% endblock %}

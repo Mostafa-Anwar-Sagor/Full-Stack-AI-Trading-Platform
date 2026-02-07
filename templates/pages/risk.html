@@ -1,0 +1,298 @@
+{% extends 'base.html' %}
+{% block title %}Risk Analysis - AI Trading Platform{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="/static/css/dashboard.css">
+<style>
+    .risk-overview {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+        margin-bottom: 24px;
+    }
+
+    .risk-score-card {
+        background: var(--bg-card);
+        border-radius: 20px;
+        padding: 32px;
+        border: 1px solid var(--border);
+        text-align: center;
+    }
+
+    .risk-gauge {
+        width: 150px;
+        height: 75px;
+        margin: 0 auto 16px;
+        position: relative;
+    }
+
+    .gauge-bg {
+        fill: none;
+        stroke: var(--bg-tertiary);
+        stroke-width: 12;
+    }
+
+    .gauge-fill {
+        fill: none;
+        stroke-width: 12;
+        stroke-linecap: round;
+        transition: stroke-dashoffset 0.5s;
+    }
+
+    .gauge-fill.low {
+        stroke: var(--success);
+    }
+
+    .gauge-fill.medium {
+        stroke: var(--warning);
+    }
+
+    .gauge-fill.high {
+        stroke: var(--danger);
+    }
+
+    .risk-score {
+        font-size: 36px;
+        font-weight: 800;
+    }
+
+    .risk-label {
+        font-size: 14px;
+        color: var(--text-secondary);
+        margin-top: 8px;
+    }
+
+    .metrics-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+        margin-bottom: 24px;
+    }
+
+    .metric-card {
+        background: var(--bg-card);
+        border-radius: 16px;
+        padding: 20px;
+        border: 1px solid var(--border);
+    }
+
+    .mc-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 16px;
+    }
+
+    .mc-title {
+        font-size: 15px;
+        font-weight: 600;
+    }
+
+    .mc-value {
+        font-size: 28px;
+        font-weight: 700;
+        margin-bottom: 8px;
+    }
+
+    .mc-desc {
+        font-size: 13px;
+        color: var(--text-secondary);
+    }
+
+    .allocation-risks {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+    }
+
+    .risk-alert {
+        display: flex;
+        align-items: flex-start;
+        gap: 14px;
+        padding: 16px;
+        background: var(--bg-primary);
+        border-radius: 12px;
+        margin-bottom: 12px;
+    }
+
+    .alert-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        flex-shrink: 0;
+    }
+
+    .alert-icon.warning {
+        background: rgba(245, 158, 11, 0.15);
+        color: var(--warning);
+    }
+
+    .alert-icon.danger {
+        background: rgba(239, 68, 68, 0.15);
+        color: var(--danger);
+    }
+
+    .alert-icon.info {
+        background: rgba(59, 130, 246, 0.15);
+        color: #3b82f6;
+    }
+
+    .alert-content {
+        flex: 1;
+    }
+
+    .alert-title {
+        font-weight: 600;
+        margin-bottom: 4px;
+    }
+
+    .alert-text {
+        font-size: 13px;
+        color: var(--text-secondary);
+    }
+
+    @media (max-width: 1024px) {
+        .risk-overview {
+            grid-template-columns: 1fr;
+        }
+
+        .metrics-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .allocation-risks {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="bg-gradient"></div>
+<button class="mobile-menu-toggle" id="mobile-menu-toggle"><i class="fas fa-bars"></i></button>
+<aside class="sidebar" id="sidebar">
+    <div class="logo">
+        <div class="logo-icon">📈</div><span class="logo-text">AI Trading</span>
+    </div>
+    <nav class="nav-section">
+        <div class="nav-section-title">Main</div>
+        <a href="/" class="nav-item"><i class="fas fa-home"></i><span>Home</span></a>
+        <a href="/dashboard/" class="nav-item"><i class="fas fa-chart-line"></i><span>Dashboard</span></a>
+        <a href="/portfolio/" class="nav-item"><i class="fas fa-wallet"></i><span>Portfolio</span></a>
+        <a href="/trading/" class="nav-item"><i class="fas fa-exchange-alt"></i><span>Trading</span></a>
+        <a href="/market/" class="nav-item"><i class="fas fa-globe"></i><span>Market</span></a>
+    </nav>
+    <nav class="nav-section">
+        <div class="nav-section-title">AI Features</div><a href="/agents/" class="nav-item"><i
+                class="fas fa-robot"></i><span>AI Agents</span></a><a href="/predictions/" class="nav-item"><i
+                class="fas fa-brain"></i><span>Predictions</span></a><a href="/backtest/" class="nav-item"><i
+                class="fas fa-history"></i><span>Backtest</span></a><a href="/risk/" class="nav-item active"><i
+                class="fas fa-shield-alt"></i><span>Risk</span></a>
+    </nav>
+    <nav class="nav-section" style="margin-top:auto"><a href="/settings/" class="nav-item"><i
+                class="fas fa-cog"></i><span>Settings</span></a><a href="/logout/" class="nav-item"><i
+                class="fas fa-sign-out-alt"></i><span>Logout</span></a></nav>
+</aside>
+
+<main class="main-content">
+    <header class="header">
+        <div class="header-left">
+            <h1>Risk Analysis</h1>
+            <p>Monitor and manage portfolio risk</p>
+        </div>
+    </header>
+
+    <div class="risk-overview">
+        <div class="risk-score-card">
+            <div class="risk-gauge"><svg viewBox="0 0 100 50">
+                    <path class="gauge-bg" d="M10,50 A40,40 0 0,1 90,50" />
+                    <path class="gauge-fill medium" d="M10,50 A40,40 0 0,1 90,50" stroke-dasharray="125.6"
+                        stroke-dashoffset="50" />
+                </svg></div>
+            <div class="risk-score" style="color:var(--warning)">5.8</div>
+            <div class="risk-label">Overall Risk Score</div>
+        </div>
+        <div class="risk-score-card">
+            <div style="font-size:48px;margin-bottom:16px">📊</div>
+            <div class="risk-score">7/10</div>
+            <div class="risk-label">Diversification Score</div>
+        </div>
+        <div class="risk-score-card">
+            <div style="font-size:48px;margin-bottom:16px">⚖️</div>
+            <div class="risk-score" style="color:var(--success)">Moderate</div>
+            <div class="risk-label">Risk Tolerance Match</div>
+        </div>
+    </div>
+
+    <div class="metrics-grid">
+        <div class="metric-card">
+            <div class="mc-header"><span class="mc-title">Value at Risk (95%)</span><i class="fas fa-info-circle"
+                    style="color:var(--text-muted)"></i></div>
+            <div class="mc-value" style="color:var(--danger)">-8.5%</div>
+            <div class="mc-desc">Maximum expected loss in 24h at 95% confidence</div>
+        </div>
+        <div class="metric-card">
+            <div class="mc-header"><span class="mc-title">Sharpe Ratio</span><i class="fas fa-info-circle"
+                    style="color:var(--text-muted)"></i></div>
+            <div class="mc-value">1.85</div>
+            <div class="mc-desc">Risk-adjusted return performance</div>
+        </div>
+        <div class="metric-card">
+            <div class="mc-header"><span class="mc-title">Max Drawdown</span><i class="fas fa-info-circle"
+                    style="color:var(--text-muted)"></i></div>
+            <div class="mc-value" style="color:var(--danger)">-12.3%</div>
+            <div class="mc-desc">Largest peak-to-trough decline</div>
+        </div>
+        <div class="metric-card">
+            <div class="mc-header"><span class="mc-title">Portfolio Beta</span><i class="fas fa-info-circle"
+                    style="color:var(--text-muted)"></i></div>
+            <div class="mc-value">1.12</div>
+            <div class="mc-desc">Correlation with market movements</div>
+        </div>
+    </div>
+
+    <div class="allocation-risks">
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title"><i class="fas fa-chart-pie"></i> Position Exposure</h2>
+            </div>
+            <div style="height:250px"><canvas id="exposureChart"></canvas></div>
+        </div>
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title"><i class="fas fa-bell"></i> Risk Alerts</h2>
+            </div>
+            <div class="risk-alert">
+                <div class="alert-icon warning"><i class="fas fa-exclamation-triangle"></i></div>
+                <div class="alert-content">
+                    <div class="alert-title">High Concentration</div>
+                    <div class="alert-text">BTC position exceeds 50% of portfolio. Consider rebalancing.</div>
+                </div>
+            </div>
+            <div class="risk-alert">
+                <div class="alert-icon info"><i class="fas fa-info-circle"></i></div>
+                <div class="alert-content">
+                    <div class="alert-title">Volatility Increase</div>
+                    <div class="alert-text">Market volatility has increased 15% in the last 24h.</div>
+                </div>
+            </div>
+            <div class="risk-alert">
+                <div class="alert-icon danger"><i class="fas fa-times-circle"></i></div>
+                <div class="alert-content">
+                    <div class="alert-title">Stop Loss Triggered</div>
+                    <div class="alert-text">XRP position hit stop loss at $0.48. Consider reviewing.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script>
+    document.getElementById('mobile-menu-toggle')?.addEventListener('click', () => document.getElementById('sidebar').classList.toggle('active'));
+    const ctx = document.getElementById('exposureChart')?.getContext('2d');
+    if (ctx) { new Chart(ctx, { type: 'doughnut', data: { labels: ['BTC', 'ETH', 'SOL', 'BNB', 'Cash'], datasets: [{ data: [52, 24, 12, 8, 4], backgroundColor: ['#f7931a', '#627eea', '#9945ff', '#f3ba2f', '#6b7280'] }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { color: '#9ca3af' } } }, cutout: '65%' } }); }
+</script>
+{% endblock %}

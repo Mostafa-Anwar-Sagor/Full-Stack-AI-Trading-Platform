@@ -1,0 +1,396 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard - AI Trading Platform{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="/static/css/dashboard.css">
+<script src="https://unpkg.com/lightweight-charts@4.1.0/dist/lightweight-charts.standalone.production.js"></script>
+{% endblock %}
+
+{% block content %}
+<div class="bg-gradient"></div>
+<button class="mobile-menu-toggle" id="mobile-menu-toggle"><i class="fas fa-bars"></i></button>
+<aside class="sidebar" id="sidebar">
+    <div class="logo">
+        <div class="logo-icon">📈</div><span class="logo-text">AI Trading</span>
+    </div>
+    <nav class="nav-section">
+        <div class="nav-section-title">Main</div>
+        <a href="/" class="nav-item"><i class="fas fa-home"></i><span>Home</span></a>
+        <a href="/dashboard/" class="nav-item active"><i class="fas fa-chart-line"></i><span>Dashboard</span></a>
+        <a href="/portfolio/" class="nav-item"><i class="fas fa-wallet"></i><span>Portfolio</span></a>
+        <a href="/trading/" class="nav-item"><i class="fas fa-exchange-alt"></i><span>Trading</span></a>
+        <a href="/market/" class="nav-item"><i class="fas fa-globe"></i><span>Market</span></a>
+    </nav>
+    <nav class="nav-section">
+        <div class="nav-section-title">AI Features</div>
+        <a href="/agents/" class="nav-item"><i class="fas fa-robot"></i><span>AI Agents</span></a>
+        <a href="/predictions/" class="nav-item"><i class="fas fa-brain"></i><span>Predictions</span></a>
+        <a href="/backtest/" class="nav-item"><i class="fas fa-history"></i><span>Backtest</span></a>
+        <a href="/risk/" class="nav-item"><i class="fas fa-shield-alt"></i><span>Risk</span></a>
+    </nav>
+    <nav class="nav-section" style="margin-top:auto">
+        <a href="/settings/" class="nav-item"><i class="fas fa-cog"></i><span>Settings</span></a>
+        <a href="/logout/" class="nav-item"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a>
+    </nav>
+</aside>
+
+<main class="main-content">
+    <header class="header">
+        <div class="header-left">
+            <h1>Welcome back, {{ user.first_name|default:user.username }}! 👋</h1>
+            <p>Here's what's happening with your portfolio today</p>
+        </div>
+        <div class="header-right"><span class="paper-trading-badge"><i class="fas fa-flask"></i>Paper Trading</span><a
+                href="/trading/" class="btn btn-primary"><i class="fas fa-plus"></i>New Trade</a></div>
+    </header>
+
+    <!-- Stats Grid -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon purple"><i class="fas fa-wallet"></i></div>
+            <div class="stat-label">Portfolio Value</div>
+            <div class="stat-value" id="portfolio-value">$24,582.45</div>
+            <div class="stat-change positive"><i class="fas fa-arrow-up"></i>+12.5%</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon green"><i class="fas fa-chart-line"></i></div>
+            <div class="stat-label">Today's P&L</div>
+            <div class="stat-value" id="today-pnl">+$1,245.32</div>
+            <div class="stat-change positive"><i class="fas fa-arrow-up"></i>+5.3%</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon blue"><i class="fas fa-robot"></i></div>
+            <div class="stat-label">Active AI Agents</div>
+            <div class="stat-value">4</div>
+            <div class="stat-change positive"><i class="fas fa-check"></i>All Running</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon orange"><i class="fas fa-bullseye"></i></div>
+            <div class="stat-label">Win Rate</div>
+            <div class="stat-value">67.5%</div>
+            <div class="stat-change positive"><i class="fas fa-arrow-up"></i>+2.1%</div>
+        </div>
+    </div>
+
+    <!-- AI Signals Bar -->
+    <div class="ai-signals-bar">
+        <div class="signal-title"><i class="fas fa-brain"></i>AI Trading Signals</div>
+        <div class="signals-container" id="ai-signals"></div>
+    </div>
+
+    <!-- Content Grid -->
+    <div class="content-grid">
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title"><i class="fas fa-chart-area"></i>Portfolio Performance</h2>
+                <div class="time-filter"><button class="time-filter-btn">1D</button><button
+                        class="time-filter-btn">1W</button><button class="time-filter-btn active">1M</button><button
+                        class="time-filter-btn">3M</button><button class="time-filter-btn">1Y</button></div>
+            </div>
+            <div class="chart-container" id="portfolio-chart"></div>
+        </div>
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title"><i class="fas fa-coins"></i>Top Assets</h2>
+            </div>
+            <div class="asset-list" id="asset-list"></div>
+        </div>
+    </div>
+
+    <!-- Live Market Prices -->
+    <div class="card">
+        <div class="card-header">
+            <h2 class="card-title"><i class="fas fa-globe"></i>Live Market Prices</h2><span
+                style="display:flex;align-items:center;gap:6px;color:var(--success);font-size:12px"><span
+                    style="width:8px;height:8px;background:var(--success);border-radius:50%;animation:pulse 2s infinite"></span>Live
+                from Binance</span>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px" id="live-prices">
+        </div>
+    </div>
+
+    <!-- AI Agents Grid -->
+    <div class="card">
+        <div class="card-header">
+            <h2 class="card-title"><i class="fas fa-robot"></i>Active AI Agents</h2><a href="/agents/"
+                class="btn btn-secondary" style="font-size:12px"><i class="fas fa-plus"></i>New Agent</a>
+        </div>
+        <div class="agents-grid" id="agents-grid"></div>
+    </div>
+
+    <!-- Recent Trades -->
+    <div class="card">
+        <div class="card-header">
+            <h2 class="card-title"><i class="fas fa-history"></i>Recent Trades</h2><a href="/trading/"
+                class="btn btn-secondary" style="font-size:12px">View All</a>
+        </div>
+        <div class="table-responsive">
+            <table class="trades-table">
+                <thead>
+                    <tr>
+                        <th>Time</th>
+                        <th>Pair</th>
+                        <th>Type</th>
+                        <th>Side</th>
+                        <th>Price</th>
+                        <th>Amount</th>
+                        <th>Total</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="recent-trades"></tbody>
+            </table>
+        </div>
+    </div>
+</main>
+
+<div class="toast-container" id="toast-container"></div>
+<script>
+    // Binance API for real prices
+    const BINANCE_API = 'https://api.binance.com/api/v3';
+    const CRYPTO_SYMBOLS = [
+        { symbol: 'BTCUSDT', name: 'Bitcoin', color: '#f7931a' },
+        { symbol: 'ETHUSDT', name: 'Ethereum', color: '#627eea' },
+        { symbol: 'BNBUSDT', name: 'BNB', color: '#f3ba2f' },
+        { symbol: 'SOLUSDT', name: 'Solana', color: '#9945ff' },
+        { symbol: 'XRPUSDT', name: 'XRP', color: '#23292f' },
+        { symbol: 'DOGEUSDT', name: 'Dogecoin', color: '#c2a633' }
+    ];
+
+    let cryptoPrices = {};
+
+    const AGENTS = [
+        { name: 'BTC Momentum', type: 'PPO', status: 'running', pair: 'BTC/USDT', profit: '+12.5%', trades: 156 },
+        { name: 'ETH Scalper', type: 'DQN', status: 'running', pair: 'ETH/USDT', profit: '+8.3%', trades: 324 },
+        { name: 'SOL Trend', type: 'LSTM', status: 'training', pair: 'SOL/USDT', profit: '+5.2%', trades: 89 },
+        { name: 'Multi-Asset', type: 'A3C', status: 'running', pair: 'Multiple', profit: '+15.8%', trades: 412 }
+    ];
+
+    const TRADES = [
+        { time: '2 min ago', pair: 'BTC/USDT', type: 'Limit', side: 'buy', price: 68450, amount: 0.05, status: 'Filled' },
+        { time: '15 min ago', pair: 'ETH/USDT', type: 'Market', side: 'sell', price: 2520, amount: 0.5, status: 'Filled' },
+        { time: '1 hour ago', pair: 'SOL/USDT', type: 'Limit', side: 'buy', price: 142.50, amount: 10, status: 'Filled' },
+        { time: '3 hours ago', pair: 'BNB/USDT', type: 'Stop', side: 'sell', price: 580, amount: 1, status: 'Cancelled' }
+    ];
+
+    document.addEventListener('DOMContentLoaded', async function () {
+        await loadRealPrices();
+        initPortfolioChart();
+        renderAssetList();
+        renderLivePrices();
+        renderAISignals();
+        renderAgents();
+        renderRecentTrades();
+        startLiveUpdates();
+        initEventListeners();
+    });
+
+    async function loadRealPrices() {
+        try {
+            const response = await fetch(`${BINANCE_API}/ticker/24hr`);
+            const allTickers = await response.json();
+
+            CRYPTO_SYMBOLS.forEach(crypto => {
+                const ticker = allTickers.find(t => t.symbol === crypto.symbol);
+                if (ticker) {
+                    cryptoPrices[crypto.symbol] = {
+                        price: parseFloat(ticker.lastPrice),
+                        change: parseFloat(ticker.priceChangePercent),
+                        volume: parseFloat(ticker.volume),
+                        ...crypto
+                    };
+                }
+            });
+        } catch (error) {
+            console.error('Error loading prices:', error);
+            // Fallback prices
+            CRYPTO_SYMBOLS.forEach(crypto => {
+                cryptoPrices[crypto.symbol] = {
+                    price: Math.random() * 10000,
+                    change: (Math.random() - 0.5) * 10,
+                    volume: Math.random() * 1000000,
+                    ...crypto
+                };
+            });
+        }
+    }
+
+    function initPortfolioChart() {
+        const container = document.getElementById('portfolio-chart');
+        if (!container) return;
+
+        const chart = LightweightCharts.createChart(container, {
+            width: container.clientWidth,
+            height: 280,
+            layout: { background: { type: 'solid', color: 'transparent' }, textColor: '#9ca3af' },
+            grid: { vertLines: { color: 'rgba(255,255,255,0.04)' }, horzLines: { color: 'rgba(255,255,255,0.04)' } },
+            rightPriceScale: { borderColor: 'rgba(255,255,255,0.1)' },
+            timeScale: { borderColor: 'rgba(255,255,255,0.1)', timeVisible: true }
+        });
+
+        const series = chart.addAreaSeries({
+            lineColor: '#6366f1',
+            topColor: 'rgba(99, 102, 241, 0.4)',
+            bottomColor: 'rgba(99, 102, 241, 0.0)',
+            lineWidth: 2
+        });
+
+        const data = [];
+        let value = 20000;
+        const now = Math.floor(Date.now() / 1000);
+        for (let i = 30; i >= 0; i--) {
+            value *= 1 + (Math.random() - 0.45) * 0.02;
+            data.push({ time: now - i * 86400, value });
+        }
+        series.setData(data);
+
+        window.addEventListener('resize', () => chart.applyOptions({ width: container.clientWidth }));
+    }
+
+    function renderAssetList() {
+        const container = document.getElementById('asset-list');
+        const balances = { BTCUSDT: 0.5, ETHUSDT: 2.5, BNBUSDT: 3, SOLUSDT: 15, XRPUSDT: 1000, DOGEUSDT: 5000 };
+
+        let html = '';
+        Object.keys(cryptoPrices).forEach(symbol => {
+            const crypto = cryptoPrices[symbol];
+            const balance = balances[symbol] || 0;
+            const value = crypto.price * balance;
+            const displaySymbol = symbol.replace('USDT', '');
+
+            html += `<div class="asset-item" onclick="window.location.href='/trading/?pair=${symbol}'">
+            <div class="asset-info">
+                <div class="asset-icon" style="background:${crypto.color}">${displaySymbol.slice(0, 2)}</div>
+                <div><div class="asset-name">${crypto.name}</div><div class="asset-symbol">${balance} ${displaySymbol}</div></div>
+            </div>
+            <div class="asset-price">
+                <div class="asset-price-value">$${value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
+                <div class="asset-change ${crypto.change >= 0 ? 'positive' : 'negative'}">${crypto.change >= 0 ? '+' : ''}${crypto.change.toFixed(2)}%</div>
+            </div>
+        </div>`;
+        });
+        container.innerHTML = html;
+    }
+
+    function renderLivePrices() {
+        const container = document.getElementById('live-prices');
+        let html = '';
+
+        Object.keys(cryptoPrices).forEach(symbol => {
+            const crypto = cryptoPrices[symbol];
+            const displaySymbol = symbol.replace('USDT', '');
+
+            html += `<div style="background:var(--bg-primary);border-radius:12px;padding:16px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;transition:all 0.2s" onclick="window.location.href='/trading/?pair=${symbol}'" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='none'">
+            <div style="display:flex;align-items:center;gap:10px">
+                <div style="width:40px;height:40px;border-radius:10px;background:${crypto.color};display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;color:white">${displaySymbol.slice(0, 2)}</div>
+                <div><div style="font-weight:600;font-size:15px">${displaySymbol}/USDT</div><div style="font-size:11px;color:var(--text-muted)">${crypto.name}</div></div>
+            </div>
+            <div style="text-align:right">
+                <div style="font-weight:700;font-size:16px;font-family:'SF Mono',monospace" id="live-${symbol}">$${formatPrice(crypto.price)}</div>
+                <div style="font-size:12px;font-weight:600" class="${crypto.change >= 0 ? 'positive' : 'negative'}" id="change-${symbol}">${crypto.change >= 0 ? '+' : ''}${crypto.change.toFixed(2)}%</div>
+            </div>
+        </div>`;
+        });
+        container.innerHTML = html;
+    }
+
+    function renderAISignals() {
+        const container = document.getElementById('ai-signals');
+        const signals = [
+            { symbol: 'BTC', signal: 'buy', text: 'Buy' },
+            { symbol: 'ETH', signal: 'buy', text: 'Strong Buy' },
+            { symbol: 'SOL', signal: 'hold', text: 'Hold' },
+            { symbol: 'XRP', signal: 'sell', text: 'Sell' }
+        ];
+
+        container.innerHTML = signals.map(s =>
+            `<div class="signal-chip ${s.signal}"><i class="fas fa-arrow-${s.signal === 'sell' ? 'down' : s.signal === 'buy' ? 'up' : 'right'}"></i>${s.symbol} <strong>${s.text}</strong></div>`
+        ).join('');
+    }
+
+    function renderAgents() {
+        const container = document.getElementById('agents-grid');
+        container.innerHTML = AGENTS.map(agent => `
+        <div class="agent-card">
+            <div class="agent-header">
+                <span class="agent-type ${agent.type.toLowerCase()}">${agent.type}</span>
+                <span class="agent-status"><span class="status-dot ${agent.status}"></span>${agent.status}</span>
+            </div>
+            <div class="agent-name">${agent.name}</div>
+            <div class="agent-pair">${agent.pair}</div>
+            <div class="agent-stats">
+                <div class="agent-stat"><div class="agent-stat-value" style="color:var(--success)">${agent.profit}</div><div class="agent-stat-label">Profit</div></div>
+                <div class="agent-stat"><div class="agent-stat-value">${agent.trades}</div><div class="agent-stat-label">Trades</div></div>
+            </div>
+            <div class="agent-actions">
+                <button class="agent-btn ${agent.status === 'running' ? 'stop' : 'start'}">${agent.status === 'running' ? 'Stop' : 'Start'}</button>
+            </div>
+        </div>
+    `).join('');
+    }
+
+    function renderRecentTrades() {
+        const container = document.getElementById('recent-trades');
+        container.innerHTML = TRADES.map(trade => `
+        <tr>
+            <td style="color:var(--text-muted)">${trade.time}</td>
+            <td style="font-weight:600">${trade.pair}</td>
+            <td>${trade.type}</td>
+            <td><span class="trade-type ${trade.side}">${trade.side.toUpperCase()}</span></td>
+            <td style="font-family:monospace">$${trade.price.toLocaleString()}</td>
+            <td>${trade.amount}</td>
+            <td style="font-family:monospace">$${(trade.price * trade.amount).toLocaleString()}</td>
+            <td><span style="color:${trade.status === 'Filled' ? 'var(--success)' : 'var(--text-muted)'}">${trade.status}</span></td>
+        </tr>
+    `).join('');
+    }
+
+    async function startLiveUpdates() {
+        setInterval(async () => {
+            try {
+                const response = await fetch(`${BINANCE_API}/ticker/24hr`);
+                const allTickers = await response.json();
+
+                Object.keys(cryptoPrices).forEach(symbol => {
+                    const ticker = allTickers.find(t => t.symbol === symbol);
+                    if (ticker) {
+                        cryptoPrices[symbol].price = parseFloat(ticker.lastPrice);
+                        cryptoPrices[symbol].change = parseFloat(ticker.priceChangePercent);
+
+                        const priceEl = document.getElementById(`live-${symbol}`);
+                        const changeEl = document.getElementById(`change-${symbol}`);
+                        if (priceEl) priceEl.textContent = `$${formatPrice(cryptoPrices[symbol].price)}`;
+                        if (changeEl) {
+                            changeEl.textContent = `${cryptoPrices[symbol].change >= 0 ? '+' : ''}${cryptoPrices[symbol].change.toFixed(2)}%`;
+                            changeEl.className = cryptoPrices[symbol].change >= 0 ? 'positive' : 'negative';
+                        }
+                    }
+                });
+
+                // Update portfolio value
+                const balances = { BTCUSDT: 0.5, ETHUSDT: 2.5, BNBUSDT: 3, SOLUSDT: 15, XRPUSDT: 1000, DOGEUSDT: 5000 };
+                let totalValue = 0;
+                Object.keys(balances).forEach(s => {
+                    if (cryptoPrices[s]) totalValue += cryptoPrices[s].price * balances[s];
+                });
+                document.getElementById('portfolio-value').textContent = `$${totalValue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+            } catch (error) {
+                console.error('Error updating prices:', error);
+            }
+        }, 5000);
+    }
+
+    function initEventListeners() {
+        document.getElementById('mobile-menu-toggle')?.addEventListener('click', () => document.getElementById('sidebar').classList.toggle('active'));
+        document.querySelectorAll('.time-filter-btn').forEach(btn => btn.addEventListener('click', function () {
+            document.querySelectorAll('.time-filter-btn').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+        }));
+    }
+
+    function formatPrice(p) {
+        if (p >= 1000) return p.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        if (p >= 1) return p.toFixed(2);
+        return p.toFixed(4);
+    }
+</script>
+{% endblock %}

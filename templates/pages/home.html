@@ -1,0 +1,599 @@
+{% extends 'base.html' %}
+{% block title %}AI Trading Platform - Trade Smarter with AI{% endblock %}
+
+{% block extra_css %}
+<style>
+    .bg-gradient {
+        position: fixed;
+        inset: 0;
+        z-index: -1;
+        background: radial-gradient(ellipse at 30% 20%, rgba(99, 102, 241, 0.15) 0%, transparent 50%), radial-gradient(ellipse at 70% 80%, rgba(139, 92, 246, 0.1) 0%, transparent 50%), radial-gradient(ellipse at 50% 50%, rgba(168, 85, 247, 0.05) 0%, transparent 70%);
+    }
+
+    .nav {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 100;
+        padding: 16px 0;
+        transition: all 0.3s;
+    }
+
+    .nav.scrolled {
+        background: rgba(17, 24, 39, 0.95);
+        backdrop-filter: blur(20px);
+        border-bottom: 1px solid var(--border);
+    }
+
+    .nav-inner {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .logo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 20px;
+        font-weight: 800;
+    }
+
+    .logo-icon {
+        width: 40px;
+        height: 40px;
+        background: var(--accent-gradient);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+    }
+
+    .nav-links {
+        display: flex;
+        align-items: center;
+        gap: 32px;
+    }
+
+    .nav-link {
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--text-secondary);
+        transition: color 0.2s;
+    }
+
+    .nav-link:hover {
+        color: white;
+    }
+
+    .nav-buttons {
+        display: flex;
+        gap: 12px;
+    }
+
+    .hero {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        padding-top: 80px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .hero-content {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 60px;
+        align-items: center;
+    }
+
+    .hero-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 16px;
+        background: rgba(99, 102, 241, 0.15);
+        border: 1px solid rgba(99, 102, 241, 0.3);
+        border-radius: 100px;
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--accent);
+        margin-bottom: 24px;
+    }
+
+    .hero h1 {
+        font-size: 56px;
+        font-weight: 800;
+        line-height: 1.1;
+        margin-bottom: 24px;
+        background: linear-gradient(135deg, #fff 0%, #c4b5fd 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .hero p {
+        font-size: 18px;
+        color: var(--text-secondary);
+        line-height: 1.7;
+        margin-bottom: 32px;
+        max-width: 520px;
+    }
+
+    .hero-buttons {
+        display: flex;
+        gap: 16px;
+    }
+
+    .hero-stats {
+        display: flex;
+        gap: 40px;
+        margin-top: 48px;
+        padding-top: 32px;
+        border-top: 1px solid var(--border);
+    }
+
+    .hero-stat-value {
+        font-size: 28px;
+        font-weight: 800;
+        background: var(--accent-gradient);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .hero-stat-label {
+        font-size: 13px;
+        color: var(--text-muted);
+        margin-top: 4px;
+    }
+
+    .hero-visual {
+        position: relative;
+    }
+
+    .trading-card {
+        background: var(--bg-card);
+        border-radius: 24px;
+        padding: 28px;
+        border: 1px solid var(--border);
+        box-shadow: 0 40px 80px rgba(0, 0, 0, 0.5);
+        transform: perspective(1000px) rotateY(-5deg) rotateX(5deg);
+        animation: float 6s ease-in-out infinite;
+    }
+
+    @keyframes float {
+
+        0%,
+        100% {
+            transform: perspective(1000px) rotateY(-5deg) rotateX(5deg) translateY(0)
+        }
+
+        50% {
+            transform: perspective(1000px) rotateY(-5deg) rotateX(5deg) translateY(-20px)
+        }
+    }
+
+    .trading-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .trading-pair {
+        font-size: 18px;
+        font-weight: 700;
+    }
+
+    .trading-price {
+        font-size: 32px;
+        font-weight: 800;
+        color: var(--success);
+    }
+
+    .trading-change {
+        font-size: 14px;
+        color: var(--success);
+    }
+
+    .mini-chart {
+        height: 120px;
+        background: linear-gradient(180deg, rgba(16, 185, 129, 0.2) 0%, transparent 100%);
+        border-radius: 12px;
+        margin: 20px 0;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .chart-line {
+        position: absolute;
+        bottom: 20px;
+        left: 0;
+        right: 0;
+        height: 80px;
+        background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 100'%3E%3Cpath d='M0,80 Q50,60 100,70 T200,40 T300,50 T400,20' fill='none' stroke='%2310b981' stroke-width='3'/%3E%3C/svg%3E") no-repeat center;
+        background-size: 100% 100%;
+    }
+
+    .ai-badge {
+        position: absolute;
+        top: -12px;
+        right: -12px;
+        background: var(--accent-gradient);
+        padding: 8px 16px;
+        border-radius: 100px;
+        font-size: 12px;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        box-shadow: 0 10px 30px rgba(99, 102, 241, 0.5);
+    }
+
+    .ai-badge i {
+        animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+
+        0%,
+        100% {
+            opacity: 1
+        }
+
+        50% {
+            opacity: 0.5
+        }
+    }
+
+    .features {
+        padding: 120px 0;
+    }
+
+    .section-header {
+        text-align: center;
+        margin-bottom: 60px;
+    }
+
+    .section-header h2 {
+        font-size: 40px;
+        font-weight: 800;
+        margin-bottom: 16px;
+    }
+
+    .section-header p {
+        font-size: 18px;
+        color: var(--text-secondary);
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .features-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 24px;
+    }
+
+    .feature-card {
+        background: var(--bg-card);
+        border-radius: 20px;
+        padding: 32px;
+        border: 1px solid var(--border);
+        transition: all 0.3s;
+    }
+
+    .feature-card:hover {
+        transform: translateY(-8px);
+        border-color: rgba(99, 102, 241, 0.3);
+        box-shadow: 0 20px 60px rgba(99, 102, 241, 0.15);
+    }
+
+    .feature-icon {
+        width: 56px;
+        height: 56px;
+        background: var(--accent-gradient);
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        margin-bottom: 20px;
+    }
+
+    .feature-card h3 {
+        font-size: 20px;
+        font-weight: 700;
+        margin-bottom: 12px;
+    }
+
+    .feature-card p {
+        color: var(--text-secondary);
+        font-size: 14px;
+        line-height: 1.7;
+    }
+
+    .cta {
+        padding: 120px 0;
+        text-align: center;
+    }
+
+    .cta-box {
+        background: var(--accent-gradient);
+        border-radius: 32px;
+        padding: 80px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .cta-box::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='40' fill='none' stroke='rgba(255,255,255,0.1)' stroke-width='0.5'/%3E%3C/svg%3E") repeat;
+        opacity: 0.5;
+    }
+
+    .cta h2 {
+        font-size: 44px;
+        font-weight: 800;
+        margin-bottom: 20px;
+        position: relative;
+    }
+
+    .cta p {
+        font-size: 18px;
+        opacity: 0.9;
+        margin-bottom: 32px;
+        position: relative;
+    }
+
+    .cta .btn {
+        background: white;
+        color: var(--accent);
+        position: relative;
+    }
+
+    .cta .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    .footer {
+        padding: 60px 0;
+        border-top: 1px solid var(--border);
+    }
+
+    .footer-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .footer-links {
+        display: flex;
+        gap: 32px;
+    }
+
+    .footer-link {
+        font-size: 14px;
+        color: var(--text-secondary);
+    }
+
+    .footer-link:hover {
+        color: white;
+    }
+
+    @media (max-width: 1024px) {
+        .hero-content {
+            grid-template-columns: 1fr;
+            text-align: center;
+        }
+
+        .hero p {
+            margin: 0 auto 32px;
+        }
+
+        .hero-buttons {
+            justify-content: center;
+        }
+
+        .hero-stats {
+            justify-content: center;
+        }
+
+        .hero-visual {
+            display: none;
+        }
+
+        .features-grid {
+            grid-template-columns: 1fr 1fr;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .nav-links {
+            display: none;
+        }
+
+        .hero h1 {
+            font-size: 36px;
+        }
+
+        .features-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .cta-box {
+            padding: 48px 24px;
+        }
+
+        .cta h2 {
+            font-size: 28px;
+        }
+
+        .footer-content {
+            flex-direction: column;
+            gap: 24px;
+            text-align: center;
+        }
+
+        .hero-stats {
+            flex-direction: column;
+            gap: 20px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="bg-gradient"></div>
+
+<nav class="nav" id="nav">
+    <div class="container nav-inner">
+        <a href="/" class="logo">
+            <div class="logo-icon">📈</div><span>AI Trading</span>
+        </a>
+        <div class="nav-links">
+            <a href="/" class="nav-link">Home</a>
+            <a href="/features/" class="nav-link">Features</a>
+            <a href="/pricing/" class="nav-link">Pricing</a>
+            <a href="/about/" class="nav-link">About</a>
+        </div>
+        <div class="nav-buttons">
+            <a href="/login/" class="btn btn-secondary">Sign In</a>
+            <a href="/register/" class="btn btn-primary">Get Started</a>
+        </div>
+    </div>
+</nav>
+
+<section class="hero">
+    <div class="container">
+        <div class="hero-content">
+            <div class="hero-text">
+                <div class="hero-badge"><i class="fas fa-bolt"></i>Powered by Advanced AI</div>
+                <h1>Trade Smarter with AI-Powered Algorithms</h1>
+                <p>Experience the future of trading with our cutting-edge machine learning models. LSTM predictions,
+                    reinforcement learning agents, and real-time market analysis at your fingertips.</p>
+                <div class="hero-buttons">
+                    <a href="/register/" class="btn btn-primary btn-lg"><i class="fas fa-rocket"></i>Start Trading
+                        Free</a>
+                    <a href="/features/" class="btn btn-secondary btn-lg"><i class="fas fa-play"></i>Watch Demo</a>
+                </div>
+                <div class="hero-stats">
+                    <div>
+                        <div class="hero-stat-value">$2.5B+</div>
+                        <div class="hero-stat-label">Trading Volume</div>
+                    </div>
+                    <div>
+                        <div class="hero-stat-value">50K+</div>
+                        <div class="hero-stat-label">Active Traders</div>
+                    </div>
+                    <div>
+                        <div class="hero-stat-value">99.9%</div>
+                        <div class="hero-stat-label">Uptime</div>
+                    </div>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <div class="trading-card">
+                    <div class="ai-badge"><i class="fas fa-brain"></i>AI Powered</div>
+                    <div class="trading-header">
+                        <div>
+                            <div class="trading-pair">BTC/USD</div>
+                            <div style="color:var(--text-muted);font-size:13px">Bitcoin</div>
+                        </div>
+                        <div style="text-align:right">
+                            <div class="trading-price">$43,521.45</div>
+                            <div class="trading-change"><i class="fas fa-arrow-up"></i> +2.34%</div>
+                        </div>
+                    </div>
+                    <div class="mini-chart">
+                        <div class="chart-line"></div>
+                    </div>
+                    <div style="display:flex;gap:12px">
+                        <button class="btn btn-primary"
+                            style="flex:1;justify-content:center;background:var(--success)"><i
+                                class="fas fa-arrow-up"></i> Buy</button>
+                        <button class="btn btn-primary"
+                            style="flex:1;justify-content:center;background:var(--danger)"><i
+                                class="fas fa-arrow-down"></i> Sell</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="features">
+    <div class="container">
+        <div class="section-header">
+            <h2>Powerful AI Trading Features</h2>
+            <p>Everything you need to trade like a professional with AI assistance</p>
+        </div>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-brain"></i></div>
+                <h3>LSTM Price Predictions</h3>
+                <p>Advanced neural networks analyze market patterns to predict future price movements with high
+                    accuracy.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-robot"></i></div>
+                <h3>RL Trading Agents</h3>
+                <p>PPO, DQN, and A3C agents learn optimal trading strategies through reinforcement learning.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-chart-line"></i></div>
+                <h3>Technical Analysis</h3>
+                <p>Real-time RSI, MACD, Bollinger Bands, and 20+ indicators with AI-powered signals.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-shield-alt"></i></div>
+                <h3>Risk Management</h3>
+                <p>VaR analysis, Sharpe ratio tracking, and automated stop-loss recommendations.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-history"></i></div>
+                <h3>Strategy Backtesting</h3>
+                <p>Test your strategies on historical data with detailed performance metrics.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-chart-pie"></i></div>
+                <h3>Portfolio Optimization</h3>
+                <p>AI-optimized asset allocation based on your risk tolerance and goals.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="cta">
+    <div class="container">
+        <div class="cta-box">
+            <h2>Ready to Trade with AI?</h2>
+            <p>Join thousands of traders using AI to make smarter decisions</p>
+            <a href="/register/" class="btn btn-lg"><i class="fas fa-rocket"></i>Create Free Account</a>
+        </div>
+    </div>
+</section>
+
+<footer class="footer">
+    <div class="container footer-content">
+        <div class="logo">
+            <div class="logo-icon">📈</div><span>AI Trading</span>
+        </div>
+        <div class="footer-links">
+            <a href="/features/" class="footer-link">Features</a>
+            <a href="/pricing/" class="footer-link">Pricing</a>
+            <a href="/about/" class="footer-link">About Us</a>
+        </div>
+        <div style="color:var(--text-muted);font-size:13px">© 2026 AI Trading Platform</div>
+    </div>
+</footer>
+
+<script>
+    window.addEventListener('scroll', () => {
+        document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 50);
+    });
+</script>
+{% endblock %}
